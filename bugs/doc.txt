@@ -1,0 +1,21 @@
+
+do_sendfile
+command: keyword['sendfile'], md5
+server
+return :
+  ac : keyword['OK'], port
+  err: keyword['No such file']
+
+do_recvfile
+command: keyword['recvfile'], ip, port, md5
+client
+return :
+  ac : keyword['OK']
+  err: keyword['file already exist']
+
+do_getfile
+command: keyword['getfile'], md5
+server
+return :
+  ac : keyword['OK']
+  err: keyword['file already exist']
