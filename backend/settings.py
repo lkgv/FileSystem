@@ -58,7 +58,7 @@ def local_IP():
     if platform.system() == 'Windows':
         return socket.gethostbyname(socket.gethostname())
     else:
-        return '127.0.0.1'
+        return '192.168.1.138'
 
 
 def conv(dic):
@@ -77,9 +77,9 @@ def fill(message):
 
 
 def split_recv(sk):
-    length = int(str(sk.recv(max_word).strip()))
+    length = int(str(sk.recv(max_word).strip(), encoding=charset))
     cnt = (length + max_word - 1) // max_word
     data = []
     for i in range(cnt):
-        data.append(str(sk.recv(max_word)))
+        data.append(str(sk.recv(max_word), encoding=charset))
     return ' '.join(data)[:length]

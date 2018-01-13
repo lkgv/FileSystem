@@ -78,7 +78,8 @@ def heartbeat():
     while True:
         try:
             if DEBUG_level > 3:
-                print('Send heartbeat.')
+                #print('Send heartbeat.')
+                pass
             # send_to_server(keyword['heartbeat'])
             # send_to_server(bytes('%032x'%file_hash, encoding=charset))
         except:
@@ -217,10 +218,13 @@ def do_getfile(local_port, md5):
 
 
 def get_command():
+    flag = True
     while command_list.empty():
         extend_one_second()
         if DEBUG_level > 3:
-            print('Waiting for commands...')
+            if flag :
+                print('Waiting for commands...')
+            flag = False
     return command_list.get()
 
 
@@ -281,6 +285,7 @@ def sub_server():
 def main(server_ip, server_port=default_server_port, local_port_range=range(8088, 8188)):
     try:
         server_sk.connect((server_ip, server_port))
+        send_to_server(b'1'+b' '*(max_word - 1))
         send_to_server(keyword['link'])
     except:
         if DEBUG_level > -1:
