@@ -1,11 +1,53 @@
 from backend.settings import *
-from backend.sub_server import do_recvfile, send_to_server
 
 server_sk = socket.socket()
 
 def get_file(ip_address, port, md5, sth) :
     print('get', ip_address, port, md5)
-    do_recvfile(ip_address, port, md5)
+    if DEBUG_level > 2:
+        print('Recv file %s from %s:%d.' % (md5, ip_address, port))
+    exist_flag = False
+    if os.path.exists(md5):
+        if DEBUG_level > 1:
+            print('Error: File %s already exists!' % md5)
+        exist_flag = True
+
+    while True:
+        try:
+            print(ip_address, port)
+            sk = socket.socket()
+            sk.connect((ip_address, port))
+            data = split_recv(sk)
+            print(len(data))
+
+            if exist_flag:
+                sk.send(keyword['OK'])
+                sk.close()
+                break
+            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
+                file = open(md5, 'w')
+                file.write(data)
+                file.close()
+                sk.send(keyword['OK'])
+                sk.close()
+                if DEBUG_level > 2:
+                    print('Recv file %s from %s:%d succeed.' % (md5, ip_address, port))
+                break
+            else:
+                if DEBUG_level > 1:
+                    print('Error: Recv file %s from %s:%d Hash Error!' % (md5, ip_address, port))
+                sk.send(keyword['not ok'])
+        except Exception as e:
+            print(e)
+            if DEBUG_level > 1:
+                print('Error: Recv file %s from %s:%d failed!' % (md5, ip_address, port))
+            sk = socket.socket()
+            sk.connect((ip_address, port))
+            sk.send(keyword['not ok'])
+    try:
+        sk.close()
+    except:
+        pass
     sth()
 
 def put_file(ip_address, port, md5, sth):
@@ -37,7 +79,8 @@ def put_file(ip_address, port, md5, sth):
                 else:
                     if DEBUG_level > 1:
                         print('Error: Send file %s checksum failed! Resend:' % md5)
-            except:
+            except Exception as e:
+                print(e)
                 if DEBUG_level > 1:
                     print('Error: Send file %s failed!' % md5)
     else:

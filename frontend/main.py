@@ -282,7 +282,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             if "is_folder" in item:
                 child.setIcon(0, QtGui.QIcon(item["is_folder"][len(self.iconTag):]))
             for i in range(num):
-                child.setText(i, item[names[i]])
+                child.setText(i, str(item[names[i]]))
 
             if "children" in item:
                 self.addChildren(child, item["children"], names)
@@ -490,7 +490,10 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             obj_file = self.query_item(self.selectedFile.text(0))
             if obj_file is not None:
                 file_path, ok = QFileDialog.getSaveFileName(
-                    self, "文件保存", "~", "All Files (*)")
+                    self,
+                    "文件保存",
+                    self.selectedFile.text(0),
+                    "All Files (*)")
                 if ok != "":
                     if len(self.processLockers) == 0:
                         if DEBUG:
@@ -547,7 +550,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                                             file_path,
                                             curTID,
                                             self.progressSig,
-                                            self.finishSig )
+                                            self.finishSig)
             elif DEBUG:
                 print("information refreshing, cannot upload")
                 self.warnSig[str].emit("information refreshing, cannot upload")
@@ -556,11 +559,13 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             print("Error: invalid upload file path")
 
     def task_progress(self, TID, progress):
+        print("Begin task_progress TID:", TID, " Progress", progress)
         count = self.fileTree.topLevelItemCount()
         for i in range(count):
             item = self.fileTree.topLevelItem(i)
             if item.text(0) == TID:
                 item.setText(3, str(progress * 100) + '%')
+        print("Finish task_progress TID:", TID)
 
     def task_finish(self, TID):
         count = self.fileTree.topLevelItemCount()
@@ -569,6 +574,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             if item.text(0) == TID:
                 self.fileTree.takeTopLevelItem(i)
                 self.warnSig[str].emit(TID + " finished")
+        self.file_refresh()
 
     ##############################################
     # *   Creat right menu for fileTree

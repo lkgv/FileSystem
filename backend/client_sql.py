@@ -66,10 +66,12 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
     answer = eval(answer)
     cnt = [len(answer)*2, threading.Lock()]
     def dosth (cnt) :
+        print("Ah that's good")
         cnt[1].acquire()
         cnt[0] -= 1
         ps = 1 - cnt[0] / len(answer) / 2.0
-        progress_sig[str, float].emit(pid, ps)
+        # progress_sig[str, float].emit(pid, ps)
+        # frame.progressSig[str, float].emit(pid, ps)
         print('progress ', pid, ' get to ', ps)
         cnt[1].release()
     sth = lambda: dosth(cnt)
@@ -77,11 +79,12 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
         for tmp in table:
             ip = tmp["ip"]
             port = tmp["port"]
-            #newThread(put_file, args=[ip, port, hash, sth])
-            put_file(ip,port,hash,sth)
+            newThread(put_file, args=[ip, port, hash, sth])
+            # put_file(ip,port,hash,sth)
     while cnt[0] > 0:
         extend_one_second()
-    finish_sig[str].emit(pid)
+    #  finish_sig[str].emit(pid)
+    # frame.finishSig[str].emit(pid)
     return "upload file success"
 
 
@@ -94,7 +97,7 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
         cnt[1].acquire()
         cnt[0] -= 1
         ps = 1 - cnt[0] / len(answer)
-        progress_sig[str, float].emit(pid, ps)
+        # progress_sig[str, float].emit(pid, ps)
         cnt[1].release()
     sth = lambda: dosth(cnt)
     for package in answer:
@@ -109,5 +112,5 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
         pack.close()
         file.write(data)
     file.close()
-    finish_sig[str].emit(pid)
+    # finish_sig[str].emit(pid)
     return answer
