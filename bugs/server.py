@@ -1,7 +1,7 @@
 from settings import *
 
+server_sk = socket.socket()
 socks = {}
-ips = {}
 
 def server_gay_server (server1, server2, md5) :
     md5 = bytes(md5, encoding=charset)
@@ -72,19 +72,37 @@ def client_gay_server (client_sk, server, md5) :
         print('No such file!')
     return -1
 
+def make (client, message) :
+    return 'What?'
 
+def server () :
+    while True :
+        sk, addr = server_sk.accept()
+        data = sk.recv(max_word)
+        if data == keyword['link'] :
+            socks[addr[0]] = sk
+        elif data == '' :
+            continue
+        else :
+            cnt = int(str(data).strip())
+            data = []
+            for i in range(cnt) :
+                tmp = sk.recv(max_word)
+                data.append(tmp)
+            data = str(b' '.join(data).strip())
+            if data :
+                res = make(sk, data)
+                if res :
+                    sk.sendall(bytes(res, encoding=charset))
+        extend_one_second()
 
 def main (local_port = default_server_port) :
     try :
-        server_sk = socket.socket()
         server_sk.bind((local_IP(), local_port))
         server_sk.listen(500)
         if DEBUG_level > 0 :
             print('Server initialized. Address %s:%s'%(local_IP(), local_port))
-        while True:
-            sk, addr = server_sk.accept()
-            wd = sk.recv(max_word)
-            print(wd, addr)
+        server()
     except :
         if DEBUG_level > -1 :
             print('Cannot start server %s:%s!'%(local_IP(), local_port))

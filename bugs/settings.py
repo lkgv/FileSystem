@@ -37,6 +37,7 @@ keyword = {'heartbeat': 'heartbeat',
            'not ok': 'not ok',
            'file_list': 'file_list',
            'clean': 'clean',
+           'link': 'link start!',
            }
 
 

@@ -74,7 +74,7 @@ def heartbeat () :
         try :
             if DEBUG_level > 3 :
                 print('Send heartbeat.')
-            send_to_server(keyword['heartbeat'])
+            #send_to_server(keyword['heartbeat'])
             #send_to_server(bytes('%032x'%file_hash, encoding=charset))
         except :
             if DEBUG_level > 1 :
@@ -289,6 +289,7 @@ def sub_server () :
 def main (server_ip, server_port = default_server_port, local_port_range = range(8088, 8188)) :
     try :
         server_sk.connect((server_ip, server_port))
+        send_to_server(keyword['link'])
     except :
         if DEBUG_level > -1 :
             print('Error! Cannot connect to server %s:%d!'%(server_ip, server_port))

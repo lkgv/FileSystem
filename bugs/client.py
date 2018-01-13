@@ -1,6 +1,8 @@
 from settings import *
 from sub_server import do_recvfile as get_file, send_to_server
 
+server_sk = socket.socket()
+
 def put_file (ip_address, port, md5) :
     if DEBUG_level > 2 :
         print('Send file %s to %s:%s.'%(md5, ip_address, port))
@@ -34,6 +36,18 @@ def put_file (ip_address, port, md5) :
             print('Error: File %s not exists!'%md5)
     sk.close()
 
+def call_server (message) :
+    init()
+    cnt = (len(message) + max_word - 1) // max_word
+    server_sk.send(fill(bytes(str(cnt), encoding=charset)))
+    for i in range(cnt) :
+        server_sk.send(message[i*max_word, (i+1)*max_word])
+
+
+def init (server_ip, server_port) :
+    global server_sk
+    server_sk = socket.socket()
+    server_sk.bind((server_ip, server_port))
 
 if __name__ == '__main__' :
     print('client main')
