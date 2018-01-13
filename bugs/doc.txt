@@ -18,4 +18,17 @@ command: keyword['getfile'], md5
 server
 return :
   ac : keyword['OK']
-  err: keyword['file already exist']
+  err: keyword[]
+
+heartbeat:
+return :
+  keyword['heartbeat'], xor_hash
+
+send_file_list
+command: keyword['file_list']
+return :
+  n, list[], n, list[]
+
+clean
+command: keyword['clean']
+no return value

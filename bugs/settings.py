@@ -23,6 +23,7 @@ def extend_heartbeat () :
 default_server_port = 8080
 max_word = 1024
 charset = 'utf-8'
+work_dir = 'data'
 
 keyword = {'heartbeat': 'heartbeat',
            'sendfile': 'sendfile',
@@ -33,6 +34,8 @@ keyword = {'heartbeat': 'heartbeat',
            'getfile': 'getfile',
            'file already exist': 'file already exist',
            'not ok': 'not ok',
+           'file_list': 'file_list',
+           'clean': 'clean',
            }
 
 
