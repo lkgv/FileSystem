@@ -36,7 +36,6 @@ class Folder:
         self.father_name = father_folder["folder_name"]
 
     def get_children(self):
-        print('flag')
         children = find_children(db_name, self.folder_id)
         result = []
         print("1")

@@ -512,8 +512,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                                                     curTID,
                                                     obj_file['id'],
                                                     file_path,
-                                                    self.progressSig[str, float],
-                                                    self.finishSig[str] )
+                                                    self.progressSig,
+                                                    self.finishSig )
                     elif DEBUG:
                         print("information refreshing, cannot download")
                         self.warnSig[str].emit("Infomation refreshing, cannot download now")

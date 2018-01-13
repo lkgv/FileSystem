@@ -16,7 +16,7 @@ def put_file(ip_address, port, md5, sth):
         file = open('tmp/'+md5, 'rb')
         data = file.read()
         file.close()
-        cnt = (len(data) + max_word - 1) / max_word
+        cnt = len(data)
         while True:
             try:
                 sk = socket.socket()
@@ -29,6 +29,7 @@ def put_file(ip_address, port, md5, sth):
                 if DEBUG_level > 2:
                     print('Send file %s finished.' % md5)
                 res = sk.recv(max_word)
+                sk.close()
                 if res == keyword['OK']:
                     if DEBUG_level > 0:
                         print('Send file %s accepted.' % md5)
@@ -42,7 +43,6 @@ def put_file(ip_address, port, md5, sth):
     else:
         if DEBUG_level > 1:
             print('Error: File %s not exists!' % md5)
-    sk.close()
     sth()
 
 
