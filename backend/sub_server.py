@@ -285,6 +285,7 @@ def sub_server():
 def main(server_ip, server_port=default_server_port, local_port_range=range(8088, 8188)):
     try:
         server_sk.connect((server_ip, server_port))
+        send_to_server(b'1'+b' '*(max_word - 1))
         send_to_server(keyword['link'])
     except:
         if DEBUG_level > -1:

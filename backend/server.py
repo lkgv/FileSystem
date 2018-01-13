@@ -109,7 +109,7 @@ def make(client, message):
 def server():
     while True:
         sk, addr = server_sk.accept()
-        data = sk.recv(max_word)
+        data = split_recv(sk)
         if data == keyword['link']:
             socks[addr[0]] = sk
             if DEBUG_level > 3 :
@@ -117,14 +117,12 @@ def server():
         elif data == '':
             continue
         else:
-            data = split_recv(sk)
-            if data:
-                if DEBUG_level > 3 :
-                    print('Recv command:', data)
-                res = make(sk, data)
-                if res:
-                    sk.send(fill(bytes(str(len(res)), encoding=charset)))
-                    sk.sendall(bytes(res, encoding=charset))
+            if DEBUG_level > 3 :
+                print('Recv command:', data)
+            res = make(sk, data)
+            if res:
+                sk.send(fill(bytes(str(len(res)), encoding=charset)))
+                sk.sendall(bytes(res, encoding=charset))
         extend_one_second()
 
 
@@ -134,10 +132,10 @@ def main(local_port=default_server_port):
         server_sk.listen(500)
         if DEBUG_level > 0:
             print('Server initialized. Address %s:%s' % (local_IP(), local_port))
-        server()
     except:
         if DEBUG_level > -1:
             print('Cannot start server %s:%s!' % (local_IP(), local_port))
+    server()
 
 if __name__ == "__main__":
     print(local_IP())
