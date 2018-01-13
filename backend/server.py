@@ -114,6 +114,8 @@ def server():
             if DEBUG_level > 3 :
                 print('Subserver - %s linked.'%addr[0])
                 print(socks)
+                siz = int(str(sk.recv(max_word), encoding=charset))
+                add_server(addr[0], siz)
         elif data == '':
             continue
         else:

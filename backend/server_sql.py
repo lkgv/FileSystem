@@ -89,7 +89,7 @@ def download__file(db_name, doc_id):
         tmp = package
         ips = get_ip(db_name, package["package_id"])
         for ip in ips:
-            sk = socks[ip]
+            sk = socks[ip[0]]
             sk.send(keyword['sendfile'])
             sk.send(bytes(package["package_hash"], encoding=charset))
             res = sk.recv(max_word)

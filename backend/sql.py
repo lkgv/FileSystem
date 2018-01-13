@@ -315,10 +315,22 @@ def find_package(db_name, doc_id):
     return result
 
 
+def add_server(server_ip, server_size, db_name="../test.db"):
+    con = sqlite3.connect(db_name)
+    cur = con.cursor()
+    cur.execute("select * from Servers where server_ip = (?)", (server_ip,))
+    flag = cur.fetchall()
+    if len(flag) == 0:
+        cur.execute("insert into Servers(server_ip, server_size) values (?, ?)", (server_ip, server_size))
+        con.commit()
+    cur.close()
+    con.close()
+
+
 def get_ip(db_name, pack_id):
     con = sqlite3.connect(db_name)
     cur = con.cursor()
-    cur.execute("select s.ip from Servers as s join PackSers as ps"
+    cur.execute("select s.server_ip from Servers as s join PackSers as ps"
                 " on s.server_id = ps.server_id where ps.package_id = (?)",
                 (pack_id,))
     pack_ip = cur.fetchall()
