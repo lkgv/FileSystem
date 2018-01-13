@@ -89,5 +89,5 @@ def split_recv(sk):
         tmp = sk.recv(max_word)
         ll += len(tmp)
         data.append(tmp)
-    print(length, len(b''.join(data)))
     return str(b''.join(data)[:length], encoding=charset)
+

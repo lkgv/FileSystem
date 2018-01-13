@@ -16,7 +16,7 @@ def put_file(ip_address, port, md5, sth):
         file = open('tmp/'+md5, 'rb')
         data = file.read()
         file.close()
-        cnt = (len(data) + max_word - 1) / max_word
+        cnt = len(data)
         while True:
             try:
                 sk = socket.socket()
