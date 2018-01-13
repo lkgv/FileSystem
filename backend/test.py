@@ -1,6 +1,6 @@
-from settings import *
-import server
-import sub_server
+from backend.settings import *
+import backend.server
+import backend.sub_server
 
 def fuck () :
     while True :
