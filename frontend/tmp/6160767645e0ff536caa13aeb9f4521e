@@ -1,0 +1,86 @@
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+# from sklearn.decomposition import PCA
+from ..pca import PCA
+import skimage
+from skimage import io as imio, color as imcol, measure as immsr
+
+####################
+# Random data
+####################
+
+X_ori = np.stack((np.linspace(0., 3., 20), np.linspace(1., 2., 20)), axis=1)
+X_disturb = np.random.normal(0., .1, size=(20, 2))
+X = X_ori + X_disturb
+
+pca = PCA(n_components=1)
+pca.fit(X)
+X_trans = pca.transform(X)
+X_inv = pca.inverse_transform(X_trans)
+
+X_val = np.random.normal(0., 1., (10, 2)) + np.array([1.5, 1.5])
+X_val_trans = pca.inverse_transform(pca.transform(X_val))
+
+#####
+
+fig_root = 'pca'
+plt.figure()
+plt.scatter(X[:,0], X[:,1], color='b', marker='^')
+plt.plot(X_inv[:,0], X_inv[:,1], color='c', marker='+')
+train_path = os.path.join(fig_root, 'train.eps')
+plt.savefig(train_path, format='eps', dpi=1000)
+
+plt.figure()
+plt.scatter(X_val[:,0], X_val[:,1], color='y', marker='v')
+plt.plot(X_val_trans[:,0], X_val_trans[:,1], color='r', marker='*')
+val_path = os.path.join(fig_root, 'val.eps')
+plt.savefig(val_path, format='eps', dpi=1000)
+
+plt.figure()
+plt.scatter(X[:,0], X[:,1], color='b', marker='^')
+plt.plot(X_inv[:,0], X_inv[:,1], color='c', marker='o')
+plt.scatter(X_val[:,0], X_val[:,1], color='y', marker='v')
+plt.scatter(X_val_trans[:,0], X_val_trans[:,1], color='r', marker='*')
+exp_1_path = os.path.join(fig_root, 'exp1.eps')
+plt.savefig(exp_1_path, format='eps', dpi=1000)
+
+####################
+# Faces
+####################
+
+im_dir = 'pca_data'
+
+def show_im(m):
+    plt.figure()
+    imio.imshow(im_data[m].reshape(32, 32))
+    plt.figure()
+    imio.imshow(im_out[m].reshape(32, 32))
+    plt.show()
+
+def im_pca(n_components):
+    im_list = os.listdir(im_dir)
+    im_data = np.stack(
+        (imcol.rgb2gray(imio.imread(os.path.join(im_dir, p))).ravel() for p in im_list),
+        axis=0)
+    num = im_data.shape[0]
+    pca = PCA(n_components=n_components)
+    pca.fit(im_data)
+    im_out = pca.inverse_transform(pca.transform(im_data))
+    psnr_set = np.array([immsr.compare_psnr(im_data[i], im_out[i]) for i in range(num)])
+    psnr_ave = np.average(psnr_set)
+    return psnr_ave
+
+plt.figure()
+pca_data = [im_pca(np.exp2(n).astype(int)) for n in range(1,10)]
+print(pca_data)
+x = [np.exp2(i) for i in range(1,10)]
+plt.title("psnr - n_components curve")
+plt.xlabel("n_components")
+plt.ylabel("psnr")
+plt.plot(x, pca_data, marker='>')
+psnr_curve_path = os.path.join(fig_root, 'psnr_curve.eps')
+plt.grid()
+plt.savefig(psnr_curve_path, format='eps', dpi=1000)
+
+

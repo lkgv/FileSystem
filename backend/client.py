@@ -4,15 +4,17 @@ from backend.sub_server import do_recvfile, send_to_server
 server_sk = socket.socket()
 
 def get_file(ip_address, port, md5, sth) :
+    print('get', ip_address, port, md5)
     do_recvfile(ip_address, port, md5)
     sth()
 
 def put_file(ip_address, port, md5, sth):
+    print('put', ip_address, port, md5)
     if DEBUG_level > 2:
         print('Send file %s to %s:%s.' % (md5, ip_address, port))
     sk = socket.socket()
     sk.connect((ip_address, port))
-    if os.path.exists(md5):
+    if os.path.exists('tmp/'+md5):
         file = open('tmp/'+md5, 'rb')
         data = file.read()
         file.close()
@@ -45,11 +47,14 @@ def put_file(ip_address, port, md5, sth):
 
 
 def call_server(message):
+    init('192.168.1.138',8080)
     print(fill(bytes(str(len(message)), encoding=charset)))
     server_sk.send(fill(bytes(str(len(message)), encoding=charset)))
     print(message)
     server_sk.sendall(bytes(message, encoding=charset))
-    return split_recv(server_sk)
+    ret = split_recv(server_sk)
+    print(ret)
+    return ret
 
 
 def init(server_ip, server_port):

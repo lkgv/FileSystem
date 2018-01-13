@@ -502,7 +502,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                                 "TID": curTID,
                                 "name": obj_file['id'],
                                 "u/d": "download",
-                                "progress": "0.0 %",
+                                "progress": "0.0",
                                 "path": self.currentPath
                             }
                             self.taskList.append(newTask)
@@ -537,7 +537,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                         "TID": curTID,
                         "name": os.path.basename(file_path),
                         "u/d": "upload",
-                        "progress": "0.0 %",
+                        "progress": "0.0",
                         "path": self.currentPath
                     }
                     self.taskList.append(newTask)

@@ -78,8 +78,11 @@ def fill(message):
 
 def split_recv(sk):
     length = int(str(sk.recv(max_word).strip(), encoding=charset))
-    cnt = (length + max_word - 1) // max_word
+    # cnt = (length + max_word - 1) // max_word
     data = []
-    for i in range(cnt):
-        data.append(str(sk.recv(max_word), encoding=charset))
-    return ' '.join(data)[:length]
+    ll = 0
+    while ll < length :
+        tmp = str(sk.recv(max_word), encoding=charset)
+        ll += len(tmp)
+        data.append(tmp)
+    return ''.join(data)[:length]

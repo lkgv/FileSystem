@@ -6,16 +6,20 @@ db_name = "../test.db"
 
 
 def split(path):
+    print('path: ', path)
     hash_table = []
     file = open(path)
-    os.mkdir("tmp")
+    if not os.path.exists("tmp"):
+        os.mkdir("tmp")
+    print("open end")
     while True:
         data = file.read(1024*1024)
         if data == "":
             break
-        hash_table.append(hashlib.md5(data).hexdigest())
+        hash_table.append(hashlib.md5(bytes(data, encoding=charset)).hexdigest())
         pack = open("tmp/"+hash_table[-1],'w')
         pack.write(data)
+        print('data: ', data)
         pack.close()
     file.close()
     return hash_table
@@ -98,10 +102,15 @@ class Folder:
         file = open(doc_name)
         data = file.read()
         file.close()
-        doc_hash = hashlib.md5(data).hexdigest()
+        print("Hash: ")
+        doc_hash = hashlib.md5(bytes(data, encoding=charset)).hexdigest()
+        print(doc_hash)
+        print("begin split")
         hash_table = split(doc_name)
+        print("end split")
         message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table,
                               pid, progress_sig, finish_sig)
+        print("upload file succeed")
         return message
 
     @staticmethod

@@ -17,6 +17,7 @@ def get_father_folder(db_name, folder_id):
 
 def add_folder(db_name, folder_id, folder_name):
     message = "add_folder,"+db_name+","+str(folder_id)+","+folder_name
+    print(message)
     answer = call_server(message)
     return answer
 
@@ -71,7 +72,7 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
         progress_sig.emit(pid, ps)
         cnt[1].release()
     sth = lambda: dosth(cnt)
-    for hash, table in answer:
+    for hash, table in answer.items():
         for tmp in table:
             ip = tmp["ip"]
             port = tmp["port"]

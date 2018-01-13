@@ -447,8 +447,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
 
     def change_name(self):
         newName, ok = QInputDialog.getText(self, u"改变文件名", u"新文件名: ", QLineEdit.Normal, "")
-        newName = self.check_name(newName)
-        if ok and newName is not None:
+        if ok:
             name = self.selectedFile.text(0)
             changedItem = self.query_item(name)
             if changedItem is not None:
@@ -461,25 +460,13 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
     def new_folder(self):
         name, ok = QInputDialog.getText(self, u"新建文件夹", u"文件夹名: ", QLineEdit.Normal, "")
         if ok:
-            name = self.check_name(name)
-            if name is not None:
-                newItem = QTreeWidgetItem(self.fileTree)
-                newItem.setIcon(0, QtGui.QIcon(self.folderIcon))
-                newItem.setText(0, name)
-                newItem.setText(1, "")
-                newItem.setText(2, "")
-                self.fileTree.addTopLevelItem(newItem)
-                self.threadPool.submit(self.new_folder_method, name)
-
-    def check_name(self, name):
-        while self.query_item(name) is not None:
-            name, ok = QInputDialog.getText(self, u"文件名重复或非法，请修改", u"更改后的文件名: ", QLineEdit.Normal, "")
-
-            if ok == "":
-                return None
-        return name
-
-
+            newItem = QTreeWidgetItem(self.fileTree)
+            newItem.setIcon(0, QtGui.QIcon(self.folderIcon))
+            newItem.setText(0, name)
+            newItem.setText(1, "")
+            newItem.setText(2, "")
+            self.fileTree.addTopLevelItem(newItem)
+            self.threadPool.submit(self.new_folder_method, name)
 
     def new_folder_method(self, name):
             self.currentFileNode.add_folder(name)
@@ -502,7 +489,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                                 "TID": curTID,
                                 "name": obj_file['id'],
                                 "u/d": "download",
-                                "progress": "0.0 %",
+                                "progress": "0.0",
                                 "path": self.currentPath
                             }
                             self.taskList.append(newTask)
@@ -537,7 +524,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                         "TID": curTID,
                         "name": os.path.basename(file_path),
                         "u/d": "upload",
-                        "progress": "0.0 %",
+                        "progress": "0.0",
                         "path": self.currentPath
                     }
                     self.taskList.append(newTask)
@@ -560,7 +547,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         for i in range(count):
             item = self.fileTree.topLevelItem(i)
             if item.text(0) == TID:
-                item.setText(3, str(progress * 100) + '%')
+                item.setText(3, str(progress))
 
     def task_finish(self, TID):
         count = self.fileTree.topLevelItemCount()
