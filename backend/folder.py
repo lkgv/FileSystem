@@ -11,7 +11,6 @@ def split(path):
     file = open(path)
     if not os.path.exists("tmp"):
         os.mkdir("tmp")
-    print("open end")
     while True:
         data = file.read(1024*1024)
         if data == "":

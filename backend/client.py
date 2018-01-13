@@ -12,8 +12,6 @@ def put_file(ip_address, port, md5, sth):
     print('put', ip_address, port, md5)
     if DEBUG_level > 2:
         print('Send file %s to %s:%s.' % (md5, ip_address, port))
-    sk = socket.socket()
-    sk.connect((ip_address, port))
     if os.path.exists('tmp/'+md5):
         file = open('tmp/'+md5, 'rb')
         data = file.read()
@@ -21,6 +19,8 @@ def put_file(ip_address, port, md5, sth):
         cnt = (len(data) + max_word - 1) / max_word
         while True:
             try:
+                sk = socket.socket()
+                sk.connect((ip_address, port))
                 sk.send(bytes(str(cnt), encoding=charset))
                 extend_one_second()
                 sk.sendall(data)

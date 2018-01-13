@@ -35,3 +35,8 @@ sub_server.main(local_IP())
 for i in range(N):
     newThread(put_file, ip[i], port[i], md5[i], data[i])
 
+
+"""
+update after upload
+new subserver
+"""

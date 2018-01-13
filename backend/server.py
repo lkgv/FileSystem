@@ -2,8 +2,6 @@ from backend.settings import *
 from backend.server_sql import *
 
 server_sk = socket.socket()
-socks = {}
-
 
 def server_gay_server(server1, server2, md5):
     md5 = bytes(md5, encoding=charset)
@@ -80,28 +78,28 @@ def client_gay_server(client_sk, server, md5):
 def make(client, message):
     message = message.split(",")
     if message[0] == "find_children":
-        return find_children(message[1], int(message[2]))
+        return find__children(message[1], int(message[2]))
     elif message[0] == "get_father_folder":
-        return get_father_folder(message[1], int(message[2]))
+        return get__father_folder(message[1], int(message[2]))
     elif message[0] == "add_folder":
-        return add_folder(message[1], int(message[2]), message[3])
+        return add__folder(message[1], int(message[2]), message[3])
     elif message[0] == "rename_file":
-        return rename_file(message[1], int(message[2]), message[3])
+        return rename__file(message[1], int(message[2]), message[3])
     elif message[0] == "rename_folder":
-        return rename_folder(message[1], int(message[2]), message[3])
+        return rename__folder(message[1], int(message[2]), message[3])
     elif message[0] == "relink_folder":
-        return relink_folder(message[1], int(message[2]), int(message[3]))
+        return relink__folder(message[1], int(message[2]), int(message[3]))
     elif message[0] == "relink_document":
-        return relink_document(message[1], int(message[2]), int(message[3]))
+        return relink__document(message[1], int(message[2]), int(message[3]))
     elif message[0] == "delete_folder":
-        return delete_folder(message[1], int(message[2]))
+        return delete__folder(message[1], int(message[2]))
     elif message[0] == "delete_file":
-        return delete_file(message[1], int(message[2]))
+        return delete__file(message[1], int(message[2]))
     elif message[0] == "upload_file":
-        return upload_file(message[1], int(message[2]), message[3], message[4], float(message[5]),
+        return upload__file(message[1], int(message[2]), message[3], message[4], float(message[5]),
                            message[6].split("|"))
     elif message[0] == "download_file":
-        return download_file(message[1], int(message[2]))
+        return download__file(message[1], int(message[2]))
     else:
         return "The order is wrong!!!"
 
@@ -110,10 +108,12 @@ def server():
     while True:
         sk, addr = server_sk.accept()
         data = split_recv(sk)
-        if data == keyword['link']:
-            socks[addr[0]] = sk
+        if bytes(data, encoding=charset) == keyword['link']:
+            putsk(addr[0], sk)
+            #socks[addr[0]] = sk
             if DEBUG_level > 3 :
                 print('Subserver - %s linked.'%addr[0])
+                print(socks)
         elif data == '':
             continue
         else:
@@ -122,6 +122,8 @@ def server():
             res = make(sk, data)
             if res:
                 sk.send(fill(bytes(str(len(res)), encoding=charset)))
+                print("res:", res)
+                print(bytes(res, encoding=charset))
                 sk.sendall(bytes(res, encoding=charset))
         extend_one_second()
 
@@ -138,5 +140,4 @@ def main(local_port=default_server_port):
     server()
 
 if __name__ == "__main__":
-    print(local_IP())
     main()
