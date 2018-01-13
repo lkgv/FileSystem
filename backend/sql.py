@@ -94,6 +94,28 @@ def add_folder(db_name, father_id, child_name):
         return "add folder success"
 
 
+def relink_folder(db_name, father_id, child_id):
+    con = sqlite3.connect(db_name)
+    cur = con.cursor()
+    result = "paste folder success"
+    try:
+        cur.execute("insert into TreePaths(father_id, child_id) values (?, ?)", (father_id, child_id))
+        con.commit()
+    except sqlite3.Error as e:
+        result = e.args[0]
+    cur.close()
+    con.close()
+    return result
+
+
+def get_father_folder(db_name, folder_id):
+    con = sqlite3.connect(db_name)
+    cur = con.cursor()
+    cur.execute("select f.* from Folders as f join TreePaths as t on f.folder_id = t.father where t.child = (?)", (folder_id,))
+    folder = cur.fetchone()
+    return {"folder_id": folder[0], "folder_name": folder[1]}
+
+
 def add_file(db_name, folder_id, doc_name, doc_hash, doc_size):
     con = sqlite3.connect(db_name)
     cur = con.cursor()
@@ -112,6 +134,17 @@ def add_file(db_name, folder_id, doc_name, doc_hash, doc_size):
         cur.close()
         con.close()
         return "add file success"
+
+
+def relink_document(db_name, folder_id, doc_id):
+    con = sqlite3.connect()
+    cur = con.cursor()
+    result = "paste document success"
+    try:
+        cur.execute("insert into FoldDocs(folder_id, doc_id) values (?, ?)", (folder_id, doc_id))
+    except sqlite3.Error as e:
+        result = e.args[0]
+    return result
 
 
 def add_package(db_name, doc_id, package_hash, part):
