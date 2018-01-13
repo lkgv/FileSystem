@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1288</width>
+    <height>690</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="locale">
+   <locale language="Chinese" country="China"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="locale">
+    <locale language="Chinese" country="China"/>
+   </property>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>40</y>
+      <width>1011</width>
+      <height>621</height>
+     </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>1</number>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="tabPosition">
+     <enum>QTabWidget::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <widget class="QWidget" name="fileView">
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <attribute name="title">
+      <string>文件</string>
+     </attribute>
+     <widget class="QTreeWidget" name="fileTree">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>1011</width>
+        <height>521</height>
+       </rect>
+      </property>
+      <attribute name="headerDefaultSectionSize">
+       <number>220</number>
+      </attribute>
+      <attribute name="headerShowSortIndicator" stdset="0">
+       <bool>true</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>名称</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>大小</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>修改日期</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>10</y>
+        <width>411</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="fileButtons">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="uploadButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>上传</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/upload.ico</normaloff>icons/upload.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="downloadButton">
+         <property name="text">
+          <string>下载</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/download.ico</normaloff>icons/download.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="newFolderButton">
+         <property name="text">
+          <string>New</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="copyButton">
+         <property name="text">
+          <string>复制</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/copy.ico</normaloff>icons/copy.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="pasteButton">
+         <property name="text">
+          <string>粘贴</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/paste.ico</normaloff>icons/paste.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton_2">
+         <property name="text">
+          <string>Cut</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="deleteButton">
+         <property name="text">
+          <string>删除</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/close.ico</normaloff>icons/close.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>141</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QToolButton" name="goBackButton">
+         <property name="text">
+          <string>BACK</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton">
+         <property name="text">
+          <string>刷新</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/refresh.ico</normaloff>icons/refresh.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="taskView">
+     <attribute name="title">
+      <string>任务</string>
+     </attribute>
+     <widget class="QTreeWidget" name="taskTree">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1011</width>
+        <height>591</height>
+       </rect>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <attribute name="headerDefaultSectionSize">
+       <number>200</number>
+      </attribute>
+      <attribute name="headerShowSortIndicator" stdset="0">
+       <bool>true</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>文件名</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>上传/下载</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>下载速度</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>进度</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="serverView">
+     <attribute name="title">
+      <string>服务器</string>
+     </attribute>
+     <widget class="QPushButton" name="serverRefreshButton">
+      <property name="geometry">
+       <rect>
+        <x>930</x>
+        <y>10</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/refresh.ico</normaloff>icons/refresh.ico</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>48</width>
+        <height>48</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QTreeWidget" name="serverTree">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>60</y>
+        <width>1001</width>
+        <height>531</height>
+       </rect>
+      </property>
+      <property name="indentation">
+       <number>20</number>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>true</bool>
+      </property>
+      <property name="uniformRowHeights">
+       <bool>true</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="headerCascadingSectionResizes">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="headerDefaultSectionSize">
+       <number>150</number>
+      </attribute>
+      <attribute name="headerHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="headerShowSortIndicator" stdset="0">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="headerStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>编号</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>地址</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>已用空间</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>剩余空间</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>1180</x>
+      <y>0</y>
+      <width>98</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="minimizedButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/minimize.ico</normaloff>icons/minimize.ico</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="closeButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/close.ico</normaloff>icons/close.ico</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1229</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1045</x>
+     <y>43</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>minimizedButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMinimized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1181</x>
+     <y>12</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>963</x>
+     <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uploadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_upload()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>535</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>4</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>downloadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_download()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>575</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>6</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_copy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>713</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pasteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_paste()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>769</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_delete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>879</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>484</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_refresh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>416</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>595</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileTree</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_context()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>414</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>780</x>
+     <y>13</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileTree</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_item_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>421</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1045</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>serverRefreshButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>server_refresh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1211</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1275</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newFolderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>new_folder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>656</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>560</x>
+     <y>29</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_refresh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>390</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>21</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>goBackButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>go_back()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1016</x>
+     <y>6</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fileTree</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>enter_folder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>514</x>
+     <y>313</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>45</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_cut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>802</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>828</x>
+     <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>server_refresh()</slot>
+  <slot>file_upload()</slot>
+  <slot>file_download()</slot>
+  <slot>file_copy()</slot>
+  <slot>file_paste()</slot>
+  <slot>file_delete()</slot>
+  <slot>file_refresh()</slot>
+  <slot>file_context()</slot>
+  <slot>file_item_change()</slot>
+  <slot>new_folder()</slot>
+  <slot>go_back()</slot>
+  <slot>enter_folder()</slot>
+  <slot>file_cut()</slot>
+ </slots>
+</ui>
