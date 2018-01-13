@@ -53,7 +53,7 @@ def call_server(message):
 def init(server_ip, server_port):
     global server_sk
     server_sk = socket.socket()
-    server_sk.bind((server_ip, server_port))
+    server_sk.connect((server_ip, server_port))
 
 
 if __name__ == '__main__':
