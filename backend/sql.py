@@ -315,7 +315,7 @@ def find_package(db_name, doc_id):
     return result
 
 
-def add_server(server_ip, server_size, db_name="test.db"):
+def add_server(server_ip, server_size, db_name="../test.db"):
     con = sqlite3.connect(db_name)
     cur = con.cursor()
     cur.execute("select * from Servers where server_ip = (?)", (server_ip,))
