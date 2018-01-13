@@ -62,11 +62,19 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
     message += "|".join(hash_table)
     answer = call_server(message)
     answer = eval(answer)
+    cnt = [len(answer)*2, threading.Lock()]
+    def dosth (cnt) :
+        cnt[1].acquire()
+        cnt[0] -= 1
+        cnt[1].release()
+    sth = lambda : dosth(cnt)
     for hash, table in answer :
         for tmp in table :
             ip = tmp["ip"]
             port = tmp["port"]
-            newThread(put_file, args=[ip, port, hash])
+            newThread(put_file, args=[ip, port, hash, sth])
+    while cnt[0] > 0: # no used
+        extend_one_second()
     return "upload file success"
 
 
@@ -74,6 +82,22 @@ def download_file(db_name, doc_id, path, sig):
     message = "download_file,"+db_name+","+doc_id
     answer = call_server(message)
     answer = eval(answer)
+    cnt = [len(answer), threading.Lock()]
+    def dosth (cnt) :
+        cnt[1].acquire()
+        cnt[0] -= 1
+        cnt[1].release()
+    sth = lambda : dosth(cnt)
     for package in answer:
-        newThread(get_file, args=[package["ip"], package["port"], package["package_hash"], sig])
+        newThread(get_file, args=[package["ip"], package["port"], package["package_hash"], sth])
+    while cnt[0] > 0 :
+        extend_one_second()
+    sorted(answer, key=answer["part"])
+    file = open(path, 'w')
+    for package in answer:
+        pack = open("tmp/"+package["package_hash"])
+        data = pack.read()
+        pack.close()
+        file.write(data)
+    file.close()
     return answer

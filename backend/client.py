@@ -3,17 +3,19 @@ from backend.sub_server import do_recvfile, send_to_server
 
 server_sk = socket.socket()
 
-def get_file(ip_address, port, md5, sig) :
+def get_file(ip_address, port, md5, sth) :
     do_recvfile(ip_address, port, md5)
-    sig[str, float].emit()
+    sth()
 
-def put_file(ip_address, port, md5):
+def put_file(ip_address, port, md5, sth):
     if DEBUG_level > 2:
         print('Send file %s to %s:%s.' % (md5, ip_address, port))
     sk = socket.socket()
     sk.connect((ip_address, port))
     if os.path.exists(md5):
-        data = open('tmp/'+md5, 'rb').read()
+        file = open('tmp/'+md5, 'rb')
+        data = file.read()
+        file.close()
         cnt = (len(data) + max_word - 1) / max_word
         while True:
             try:
@@ -39,6 +41,7 @@ def put_file(ip_address, port, md5):
         if DEBUG_level > 1:
             print('Error: File %s not exists!' % md5)
     sk.close()
+    sth()
 
 
 def call_server(message):
