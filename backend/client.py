@@ -39,6 +39,7 @@ def put_file (ip_address, port, md5) :
 def call_server (message) :
     server_sk.send(fill(bytes(str(len(message)), encoding=charset)))
     server_sk.sendall(message)
+    return split_recv(server_sk)
 
 
 def init (server_ip, server_port) :
