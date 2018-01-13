@@ -227,8 +227,12 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         self.file_refresh_thread()
 
     def queryItem(self, name):
+        ret = None
         for item in self.currentFileList:
-            if item['name']
+            if item['name'] == name:
+                ret = item
+        return ret
+
     def deleteTree(self, QTree):
         """
         Make a subtree of QTreeWidget Empty
