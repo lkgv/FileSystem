@@ -145,14 +145,14 @@ def do_recvfile(ip_address, port, md5):
         try:
             sk = socket.socket()
             sk.connect((ip_address, port))
-            data = split_recv(sk)
+            data = split_recv_b(sk)
 
             if exist_flag:
                 sk.send(keyword['OK'])
                 sk.close()
                 break
-            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
-                file = open(md5, 'w')
+            elif md5 == hashlib.md5(data).hexdigest():
+                file = open(md5, 'wb')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])
@@ -194,13 +194,13 @@ def do_getfile(local_port, md5):
     while True:
         try:
             sk, address = local_sk.accept()
-            data = split_recv(sk)
+            data = split_recv_b(sk)
 
             if exist_flag:
                 sk.send(keyword['OK'])
                 break
-            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
-                file = open(md5, 'w')
+            elif md5 == hashlib.md5(data).hexdigest():
+                file = open(md5, 'wb')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])
