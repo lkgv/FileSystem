@@ -90,15 +90,16 @@ class Folder:
         else:
             delete_file(db_name, item["id"])
 
-    def upload_file(self, doc_name):
+    def upload_file(self, doc_name, obj_path, progress_sig, finish_sig):
         doc_size = os.path.getsize(doc_name)
         data = open(doc_name).read()
         doc_hash = hashlib.md5(data).hexdigest()
         hash_table = split(doc_name)
-        message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table)
+        message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table,
+                              obj_path, progress_sig, finish_sig)
         return message
 
     @staticmethod
-    def download_file(pid, doc_id, path, sig):
-        message = download_file(db_name, pid, doc_id, path, sig)
+    def download_file(pid, doc_id, path, progress_sig, finish_sig):
+        message = download_file(db_name, pid, doc_id, path, progress_sig, finish_sig)
         return message

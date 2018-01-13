@@ -57,7 +57,8 @@ def delete_file(db_name, doc_id):
     return answer
 
 
-def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
+def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
+                obj_path, progress_sig, finish_sig):
     message = "upload_file,"+db_name+","+folder_id+","+doc_name+","+doc_hash+","+doc_size+","
     message += "|".join(hash_table)
     answer = call_server(message)
@@ -70,7 +71,7 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
     return "upload file success"
 
 
-def download_file(db_name, doc_id, path, sig):
+def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
     message = "download_file,"+db_name+","+doc_id
     answer = call_server(message)
     answer = eval(answer)
