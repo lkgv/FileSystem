@@ -161,3 +161,4 @@ data/
 bugs/.idea
 bugs/__pycache__
 *.db
+backend/data/*
