@@ -1,4 +1,5 @@
-def getServerList():
+import time
+def get_server_list():
     data = [
         {
             "id": "02",
