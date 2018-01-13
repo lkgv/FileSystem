@@ -119,7 +119,7 @@ class Ui_MainWindow(object):
         self.label.setEnabled(True)
         self.label.setGeometry(QtCore.QRect(30, 80, 91, 31))
         font = QtGui.QFont()
-        font.setPointSize(14)
+        font.setPointSize(12)
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.tabWidget.addTab(self.fileView, "")
@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.closeButton.clicked.connect(MainWindow.close)
         self.minimizedButton.clicked.connect(MainWindow.showMinimized)
         self.uploadButton.clicked.connect(MainWindow.file_upload)

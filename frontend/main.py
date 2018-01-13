@@ -15,7 +15,7 @@ from frontend.main_ui import *
 import backend
 import backend.fake_server
 from backend import folder
-
+from backend import client
 DEBUG = True
 
 ######################################
@@ -447,9 +447,11 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             newItem.setText(1, "")
             newItem.setText(2, "")
             self.fileTree.addTopLevelItem(newItem)
+            self.threadPool.submit(self.new_folder_method, name)
 
+    def new_folder_method(self, name):
             self.currentFileNode.add_folder(name)
-            self.file_refresh()
+            self.file_refresh_thread()
 
     def file_download(self):
         if self.selectedFile is not None:
@@ -593,6 +595,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
     ##########################################
 
 if __name__ == "__main__":
+    client.init("192.168.1.138", 8080)
     app = QApplication(sys.argv)
     wfm_shelf = WFMShelf(title="Futanari Distributed File Syetem")
     wfm_shelf.show()

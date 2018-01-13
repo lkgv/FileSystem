@@ -538,7 +538,7 @@
    <slot>file_upload()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>535</x>
+     <x>531</x>
      <y>110</y>
     </hint>
     <hint type="destinationlabel">
@@ -570,7 +570,7 @@
    <slot>file_copy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>713</x>
+     <x>784</x>
      <y>134</y>
     </hint>
     <hint type="destinationlabel">
@@ -586,7 +586,7 @@
    <slot>file_paste()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>769</x>
+     <x>836</x>
      <y>134</y>
     </hint>
     <hint type="destinationlabel">
@@ -602,7 +602,7 @@
    <slot>file_delete()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>879</x>
+     <x>938</x>
      <y>134</y>
     </hint>
     <hint type="destinationlabel">
@@ -682,7 +682,7 @@
    <slot>new_folder()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>656</x>
+     <x>644</x>
      <y>110</y>
     </hint>
     <hint type="destinationlabel">
@@ -746,7 +746,7 @@
    <slot>file_cut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>802</x>
+     <x>865</x>
      <y>107</y>
     </hint>
     <hint type="destinationlabel">
