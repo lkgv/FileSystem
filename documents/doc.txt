@@ -19,7 +19,7 @@ do_getfile
 command: keyword['getfile'], md5
 server
 return :
-  ac : keyword['OK']
+  ac : keyword['OK'], port
   err: keyword['file already exist']
 
 heartbeat:

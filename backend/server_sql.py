@@ -1,4 +1,7 @@
 from backend.sql import *
+from backend.settings import *
+from backend.server import *
+import random
 
 
 def find_children(db_name, folder_id):
@@ -46,10 +49,46 @@ def delete_file(db_name, doc_id):
     return message
 
 
-def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size):
-    add_file(db_name, folder_id, doc_name, doc_hash, doc_size)
+def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
+    doc_id = add_file(db_name, folder_id, doc_name, doc_hash, doc_size)
+    servers = get_server(db_name)
+    random.randint(servers.__len__())
+    table = {}
+    part = 0
+    for hash in hash_table:
+        part += 1
+        ips = random.sample(servers, 2)
+        temp = []
+        for ip in ips:
+            tmp = ip
+            sk = socks[ip['ip']]
+            sk.send(keyword['getfile'])
+            sk.send(bytes(hash, encoding=charset))
+            res = sk.recv(max_word)
+            if res == keyword['OK'] :
+                port = int(str(sk.recv(max_word)).strip())
+                tmp["port"] = port
+                temp.append(tmp)
+        table[hash] = temp
+        add_package(db_name, doc_id, hash, part, ips)
+    return str(table)
 
 
 def download_file(db_name, doc_id):
     packages = find_package(db_name, doc_id)
-    return str(packages)
+    result = []
+    for package in packages:
+        tmp = package
+        ips = get_ip(db_name, package["package_id"])
+        for ip in ips:
+            sk = socks[ip]
+            sk.send(keyword['sendfile'])
+            sk.send(bytes(package["package_hash"], encoding=charset))
+            res = sk.recv(max_word)
+            if res == keyword['OK'] :
+                port = int(str(sk.recv(max_word)).strip())
+                tmp["ip"] = ip
+                tmp["port"] = port
+                break
+        result.append(tmp)
+    return str(result)

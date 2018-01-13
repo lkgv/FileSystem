@@ -1,6 +1,21 @@
 # from backend.sql import *
 from backend.client_sql import *
+import hashlib
+import os
 db_name = "../test.db"
+
+
+def split(path):
+    hash_table = []
+    file = open(path)
+    os.mkdir("tmp")
+    while True:
+        data = file.read(1024*1024)
+        if data == "":
+            break
+        hash_table.append(hashlib.md5(data).hexdigest())
+        open("tmp/"+hash_table[-1],'w').write(data)
+    return hash_table
 
 
 class Folder:
@@ -75,12 +90,15 @@ class Folder:
         else:
             delete_file(db_name, item["id"])
 
-    def upload_file(self, doc_name, doc_size):
-        doc_hash = ""
-        message = upload_file(db_name, self.folder_id, doc_name, doc_hash, doc_size)
+    def upload_file(self, doc_name):
+        doc_size = os.path.getsize(doc_name)
+        data = open(doc_name).read()
+        doc_hash = hashlib.md5(data).hexdigest()
+        hash_table = split(doc_name)
+        message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table)
         return message
 
     @staticmethod
-    def download_file(doc_id, path):
-        message = download_file(db_name, doc_id, path)
+    def download_file(pid, doc_id, path, sig):
+        message = download_file(db_name, pid, doc_id, path, sig)
         return message
