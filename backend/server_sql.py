@@ -1,66 +1,74 @@
 from backend.sql import *
 from backend.settings import *
-from backend.server import *
 import random
 
+socks = {}
 
-def find_children(db_name, folder_id):
+def putsk (ip, sk) :
+    global socks
+    socks[ip] = sk
+
+def find__children(db_name, folder_id):
     children = find_children(db_name, folder_id)
+    print(len(str(children)))
+    print(str(children))
     return str(children)
 
 
-def get_father_folder(db_name, folder_id):
+def get__father_folder(db_name, folder_id):
     father_folder = get_father_folder(db_name, folder_id)
     return str(father_folder)
 
 
-def add_folder(db_name, folder_id, folder_name):
+def add__folder(db_name, folder_id, folder_name):
     message = add_folder(db_name, folder_id, folder_name)
     return message
 
 
-def rename_file(db_name, file_id, new_name):
+def rename__file(db_name, file_id, new_name):
     message = rename_file(db_name, file_id, new_name)
     return message
 
 
-def rename_folder(db_name, folder_id, new_name):
+def rename__folder(db_name, folder_id, new_name):
     message = rename_folder(db_name, folder_id, new_name)
     return message
 
 
-def relink_folder(db_name, father_id, child_id):
+def relink__folder(db_name, father_id, child_id):
     message = relink_folder(db_name, father_id, child_id)
     return message
 
 
-def relink_document(db_name, folder_id, doc_id):
+def relink__document(db_name, folder_id, doc_id):
     message = relink_document(db_name, folder_id, doc_id)
     return message
 
 
-def delete_folder(db_name, folder_id):
+def delete__folder(db_name, folder_id):
     message = delete_folder(db_name, folder_id)
     return message
 
 
-def delete_file(db_name, doc_id):
+def delete__file(db_name, doc_id):
     message = delete_file(db_name, doc_id)
     return message
 
 
-def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
+def upload__file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
     doc_id = add_file(db_name, folder_id, doc_name, doc_hash, doc_size)
     servers = get_server(db_name)
-    random.randint(servers.__len__())
     table = {}
     part = 0
     for hash in hash_table:
+        print("hash", hash)
         part += 1
         ips = random.sample(servers, 2)
+        print(ips)
         temp = []
         for ip in ips:
             tmp = ip
+            print(type(ip["ip"]))
             sk = socks[ip['ip']]
             sk.send(keyword['getfile'])
             sk.send(bytes(hash, encoding=charset))
@@ -74,7 +82,7 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
     return str(table)
 
 
-def download_file(db_name, doc_id):
+def download__file(db_name, doc_id):
     packages = find_package(db_name, doc_id)
     result = []
     for package in packages:

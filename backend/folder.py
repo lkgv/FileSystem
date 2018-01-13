@@ -8,12 +8,13 @@ db_name = "../test.db"
 def split(path):
     hash_table = []
     file = open(path)
-    os.mkdir("tmp")
+    if not os.path.exists("tmp"):
+        os.mkdir("tmp")
     while True:
         data = file.read(1024*1024)
         if data == "":
             break
-        hash_table.append(hashlib.md5(data).hexdigest())
+        hash_table.append(hashlib.md5(bytes(data, encoding=charset)).hexdigest())
         pack = open("tmp/"+hash_table[-1],'w')
         pack.write(data)
         pack.close()
@@ -98,7 +99,7 @@ class Folder:
         file = open(doc_name)
         data = file.read()
         file.close()
-        doc_hash = hashlib.md5(data).hexdigest()
+        doc_hash = hashlib.md5(bytes(data, encoding=charset)).hexdigest()
         hash_table = split(doc_name)
         message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table,
                               pid, progress_sig, finish_sig)
