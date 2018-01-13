@@ -56,7 +56,7 @@ def local_IP () :
 def conv (dic) :
     for it in dic.keys() :
         try :
-            dic[it] = bytes(dic[it], encoding=charset)
+            dic[it] = bytes(dic[it]+' '*(max_word - len(dic[it])), encoding=charset)
         except :
             pass
 

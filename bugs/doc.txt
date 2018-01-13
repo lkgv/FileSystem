@@ -1,4 +1,6 @@
 
+sub_server:
+
 do_sendfile
 command: keyword['sendfile'], md5
 server
