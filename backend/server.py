@@ -112,11 +112,15 @@ def server():
         data = sk.recv(max_word)
         if data == keyword['link']:
             socks[addr[0]] = sk
+            if DEBUG_level > 3 :
+                print('Subserver - %s linked.'%addr[0])
         elif data == '':
             continue
         else:
             data = split_recv(sk)
             if data:
+                if DEBUG_level > 3 :
+                    print('Recv command:', data)
                 res = make(sk, data)
                 if res:
                     sk.send(fill(bytes(str(len(res)), encoding=charset)))
@@ -135,3 +139,5 @@ def main(local_port=default_server_port):
         if DEBUG_level > -1:
             print('Cannot start server %s:%s!' % (local_IP(), local_port))
 
+if __name__ == '__main__' :
+    main()
