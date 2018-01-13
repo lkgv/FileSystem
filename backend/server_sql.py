@@ -66,7 +66,7 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table):
             sk.send(bytes(hash, encoding=charset))
             res = sk.recv(max_word)
             if res == keyword['OK'] :
-                port = int(str(sk.recv(max_word)).strip())
+                port = int(str(sk.recv(max_word), encoding=charset).strip())
                 tmp["port"] = port
                 temp.append(tmp)
         table[hash] = temp
@@ -86,7 +86,7 @@ def download_file(db_name, doc_id):
             sk.send(bytes(package["package_hash"], encoding=charset))
             res = sk.recv(max_word)
             if res == keyword['OK'] :
-                port = int(str(sk.recv(max_word)).strip())
+                port = int(str(sk.recv(max_word), encoding=charset).strip())
                 tmp["ip"] = ip
                 tmp["port"] = port
                 break
