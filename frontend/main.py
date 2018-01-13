@@ -13,17 +13,15 @@ from PyQt5.QtGui import QCursor, QColor, QPalette
 
 from frontend.main_ui import *
 import backend
-import backend.server
+import backend.fake_server
 from backend import folder
 
 DEBUG = True
 
 ######################################
-# TODO 1.Change file tree to nested list (Use class <folder>, method: <get_children, enter_child, back>;
-# TODO 2.add "new folder", "copy", "paste" and "delete";
-# TODO 3.add "folder icon";  [0.5/1]
-# TODO 4.delete "status in fileTree";
-# TODO 5.add "download" and "upload"
+# TODO add icons for methods
+# TODO debug
+# TODO test download and upload
 ######################################
 
 class WFMShelf(QMainWindow, Ui_MainWindow):
@@ -32,6 +30,10 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
     fileRefreshSig = pyqtSignal()
     serverRefreshSig = pyqtSignal()
     serverSig = pyqtSignal(list)
+    currentPathSig = pyqtSignal()
+    warnSig = pyqtSignal(str)
+    progressSig = pyqtSignal(str, float)
+    finishSig = pyqtSignal(str)
 
     def __init__(self, title="", max_process_num=None, max_thread_num = None, *args, **kwargs):
         super(WFMShelf, self).__init__(*args, **kwargs)
@@ -45,6 +47,10 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         # Title of the main window
         self.setTitle(title)
 
+        # Current path
+        self.currentPathList = []
+        self.currentPath = ":/"
+
         # Icon of application
         iconMain = QtGui.QIcon()
         iconMain.addPixmap(QtGui.QPixmap("icons/gnu.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -56,8 +62,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         # Global StyleSheet
         self.style = """ 
                         QPushButton{ background-color:#E0E0E0; color:#E0E0E0; } 
-                        QTabWidget{ background:#E0E0E0; color:#E0E0E0; }
-                        QTreeWidget{ background:#ADADAD;  }
+                        QTabWidget{ background:#E5E5E5; color:#E5E5E5; }
+                        QTreeWidget{ background: #F7F7F7;  }
                     """
         self.setStyleSheet(self.style)
 
@@ -106,10 +112,19 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         self.serverSig[list].connect(self.showServerTree)
         self.fileRefreshSig.connect(self.file_refresh_done)
         self.serverRefreshSig.connect(self.server_refresh_done)
+        self.currentPathSig.connect(self.change_currentPath)
+        self.warnSig[str].connect(self.lock_warning)
+        self.progressSig[str, float].connect(self.task_progress)
+        self.finishSig[str].connect(self.task_finish)
 
         # Configure FileTree
         self.currentFileNode = folder.Folder(1, "root")
         self.file_refresh()
+
+        # U/D tack list
+        self.taskList = []
+        self.nextTID = 0
+        self.maxTID = 65536
 
     ##############################################
     # *   The following three functions are events
@@ -147,8 +162,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         return self
 
     def lock_warning(self, msg, wait_time=0.8):
-        self.statusBar().showMessage(message=msg)
-        time.wait(wait_time)
+        self.statusBar().showMessage(msg)
+        time.sleep(wait_time)
 
         if len(self.processLockers) == 1:
             if self.processLockers[0] == "file_locker":
@@ -158,6 +173,9 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         elif len(self.processLockers) == 2:
             self.statusBar().showMessage("file and server refreshing...")
 
+    def change_currentPath(self):
+        self.currentPathLine.setText(self.currentPath)
+
     def file_copy(self):
         if self.selectedFile is not None:
             name = self.selectedFile.text(0)
@@ -165,6 +183,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                 if item['name'] == name:
                     self.curFlag = False
                     self.copiedItem = item
+                    self.warnSig[str].emit(self.currentPath + "/" + name + " to be copy.")
 
             if DEBUG:
                 print("COPY, ", )
@@ -179,6 +198,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             if item['name'] == name:
                 self.cutFlag = True
                 self.copiedItem = item
+                self.warnSig[str].emit(self.currentPath + "/" + name + " to be cut.")
 
         if DEBUG:
             print("CUT, ", )
@@ -198,6 +218,7 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         print('file pasted')
         if self.cutFlag:
             self.file_delete_method(self.copiedItem)
+            self.curFlag = False
 
             if DEBUG:
                 print("CUTED ", self.copiedItem['name'])
@@ -216,17 +237,16 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             if msgBox == QMessageBox.Yes:
                 if DEBUG:
                     print("DELETE ", name)
-                deletedItem = None
-                for item in self.currentFileList:
-                    if item['name'] == name:
-                        deletedItem = item
-                self.threadPool.submit(self.file_delete_method, deletedItem)
+
+                deletedItem = self.query_item(name)
+                if deletedItem is not None:
+                    self.threadPool.submit(self.file_delete_method, deletedItem)
 
     def file_delete_method(self, deletedItem):
         folder.Folder.delete(deletedItem)
         self.file_refresh_thread()
 
-    def queryItem(self, name):
+    def query_item(self, name):
         ret = None
         for item in self.currentFileList:
             if item['name'] == name:
@@ -277,7 +297,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         else:
             self.statusBar().showMessage("server refreshing...")
 
-        serverList = backend.server.get_server_list()
+        serverList = backend.fake_server.get_server_list()
+
         self.serverSig[list].emit(serverList)
         self.serverRefreshSig.emit()
 
@@ -314,7 +335,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                           ["name", "size", "date"])
 
     def file_refresh_thread(self):
-        self.processLockers.append("file_locker")
+        if "file_locker" not in self.processLockers:
+            self.processLockers.append("file_locker")
 
         if self.statusBar().currentMessage() == "server refreshing...":
             self.statusBar().showMessage("file and server refreshing...")
@@ -338,13 +360,6 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
         self.fileSig[list].emit(self.currentFileList)
         self.fileRefreshSig.emit()
 
-        # delete file_locker
-        self.processLockers = list(filter(
-            lambda item: item != "file_locker",
-            self.processLockers
-        ))
-        print('refresh end')
-
     def file_refresh_done(self):
         if self.statusBar().currentMessage() == "file refreshing...":
             self.statusBar().showMessage("file refresh done")
@@ -358,6 +373,13 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             time.sleep(0.8)
             self.statusBar().showMessage(temp)
 
+        # delete file_locker
+        self.processLockers = list(filter(
+        lambda item: item != "file_locker",
+            self.processLockers
+            ))
+        print('refresh end')
+
     def file_refresh(self):
         if DEBUG:
             print("file refresh")
@@ -366,39 +388,55 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
             self.threadPool.submit(self.file_refresh_thread)
 
     def enter_folder(self):
-        subFolderName = self.selectedFile.text(0)
-        if subFolderName == "..":
-            if self.currentFileNode.folder_id != 1:
-                self.currentFileNode = self.currentFileNode.go_back_father()
-        else:
-            subFolder = None
-            for item in self.currentFileList:
-                if item['name'] == subFolderName:
-                    subFolder = item
-            if subFolder is not None and subFolder["is_folder"]:
-                self.currentFileNode = self.currentFileNode.go_into_child(subFolder["id"], subFolder["name"])
-        self.file_refresh()
+        if not ("file_locker" in self.processLockers) \
+                and self.fileTree.currentItem() is not None:
+            subFolderName = self.fileTree.currentItem().text(0)
+            if subFolderName == "..":
+                self.go_back()
+            else:
+                subFolder = self.query_item(subFolderName)
+                if subFolder is not None and subFolder["is_folder"]:
+                    self.processLockers.append("file_locker")
+                    self.threadPool.submit(self.enter_folder_method, subFolder)
+        elif DEBUG:
+            print("File refreshing, so we can't enter folder.")
+
+    def enter_folder_method(self, subFolder):
+        self.currentFileNode = self.currentFileNode.go_into_child(
+            subFolder["id"], subFolder["name"])
+        print('node changed')
+        self.currentPathList.append(subFolder['name'])
+        self.currentPath = ":/" + "/".join(self.currentPathList)
+        self.currentPathSig.emit()
+        self.file_refresh_thread()
 
     def go_back(self):
-        if self.currentFileNode.folder_id != 1:
-            self.currentFileNode = self.currentFileNode.go_back_father()
-        self.file_refresh()
+        if not ("file_locker" in self.processLockers):
+            if self.currentFileNode.folder_id != 1:
+                self.processLockers.append("file_locker")
+                self.threadPool.submit(self.go_back_method)
+        elif DEBUG:
+            print("File refreshing, so we can't enter folder.")
+
+    def go_back_method(self):
+        self.currentFileNode = self.currentFileNode.go_back_father()
+        if len(self.currentPathList) > 0:
+            self.currentPathList.pop()
+            self.currentPath = ":/" + "/".join(self.currentPathList)
+            self.currentPathSig.emit()
+        self.file_refresh_thread()
 
     def change_name(self):
         newName, ok = QInputDialog.getText(self, u"改变文件名", u"新文件名: ", QLineEdit.Normal, "")
         if ok:
             name = self.selectedFile.text(0)
-            changedItem = None
-            for item in self.currentFileList:
-                if item['name'] == name:
-                    changedItem = item
+            changedItem = self.query_item(name)
             if changedItem is not None:
                 if changedItem['is_folder']:
                     self.currentFileNode.change_folder_name(changedItem['id'], newName)
                 else:
                     self.currentFileNode.change_file_name(changedItem['id'], newName)
                 self.file_refresh()
-
 
     def new_folder(self):
         name, ok = QInputDialog.getText(self, u"新建文件夹", u"文件夹名: ", QLineEdit.Normal, "")
@@ -415,35 +453,84 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
 
     def file_download(self):
         if self.selectedFile is not None:
-            file_path, ok = QFileDialog.getSaveFileName(self,
-                                                        "文件保存",
-                                                        "~",
-                                                        "All Files (*)")
-            if ok != "":
-                fileName = self.selectedFile.text(0)
-                if len(self.processLockers) == 0:
-                    if DEBUG:
-                        print('start download: ', self.selectedFile.text(0))
-                        print('            to: ', file_path)
-
-                    self.processPool.submit()
-                else:
-                    if DEBUG:
+            obj_file = self.query_item(self.selectedFile.text(0))
+            if obj_file is not None:
+                file_path, ok = QFileDialog.getSaveFileName(
+                    self, "文件保存", "~", "All Files (*)")
+                if ok != "":
+                    if len(self.processLockers) == 0:
+                        if DEBUG:
+                            print('start download: ', obj_file['name'])
+                            print('            to: ', file_path)
+                            curTID = str(self.nextTID)
+                            self.nextTID = (self.nextTID + 1) % self.maxTID
+                            newTask = {
+                                "TID": curTID,
+                                "name": obj_file['id'],
+                                "u/d": "download",
+                                "process": 0.0,
+                                "path": self.currentPath
+                            }
+                            self.taskList.append(newTask)
+                            self.deleteTree(self.taskTree)
+                            self.addChildren(self.taskTree, self.taskList, ["TID", "name", "u/d", "progress", "path"])
+                            self.processPool.submit(backend.download,
+                                                    curTID,
+                                                    obj_file['id'],
+                                                    file_path,
+                                                    self.progressSig,
+                                                    self.finishSig)
+                    elif DEBUG:
                         print("information refreshing, cannot download")
-                    self.threadPool.submit(self.lock_warning, "Infomation refreshing, cannot download now")
+                        self.warnSig[str].emit("Infomation refreshing, cannot download now")
+                        # self.threadPool.submit(self.lock_warning, "Infomation refreshing, cannot download now")
+                elif DEBUG:
+                    print("Error: invalid save path")
 
     def file_upload(self):
-        pass
+        file_path, ok = QFileDialog.getOpenFileName(
+            self,
+            "~/",
+            "All files (*)")
+        if ok != "":
+            if len(self.processLockers) == 0:
+                if DEBUG:
+                    print('start upload: ', file_path)
+                    print('          to: ', self.currentPath)
+                    curTID = str(self.nextTID)
+                    self.nextTID = (self.nextTID + 1) % self.maxTID
+                    newTask = {
+                        "TID": curTID,
+                        "name": os.path.basename(file_path),
+                        "u/d": "upload",
+                        "process": 0.0,
+                        "path": self.currentPath
+                    }
+                    self.taskList.append(newTask)
+                    self.deleteTree(self.taskTree)
+                    self.addChildren(self.taskTree, self.taskList, ["TID", "name", "u/d", "progress", "path"])
+                    self.processPool.submit(backend.upload, curTID, file_path, self.currentPath)
+            elif DEBUG:
+                print("information refreshing, cannot upload")
+                self.warnSig[str].emit("information refreshing, cannot upload")
+                # self.threadPool.submit(self.lock_warning, "Infomation refreshing, cannot upload now")
+        elif DEBUG:
+            print("Error: invalid upload file path")
 
-    def download_succeed(self, item, status={'msg': 'succeed'}):
-        if status['msg'] == 'succeed':
-            # item = status['file_status']
-            item.setText(1, u'已下载')
-            self.statusBar().showMessage('Succeed')
-        else:
-            self.statusBar().showMessage(status['msg'])
+    def task_progress(self, TID, progress):
+        count = self.fileTree.topLevelItemCount()
+        for i in range(count):
+            item = self.fileTree.topLevelItem(i)
+            if item.text(0) == TID:
+                item.setText(3, progress)
 
-        self.activated = False
+    def task_finish(self, TID):
+        count = self.fileTree.topLevelItemCount()
+        for i in range(count):
+            item = self.fileTree.topLevelItem(i)
+            if item.text(0) == TID:
+                self.fileTree.takeTopLevelItem(i)
+                self.warnSig[str].emit(TID + " finished")
 
     ##############################################
     # *   Creat right menu for fileTree
