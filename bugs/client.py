@@ -37,11 +37,8 @@ def put_file (ip_address, port, md5) :
     sk.close()
 
 def call_server (message) :
-    init()
-    cnt = (len(message) + max_word - 1) // max_word
-    server_sk.send(fill(bytes(str(cnt), encoding=charset)))
-    for i in range(cnt) :
-        server_sk.send(message[i*max_word, (i+1)*max_word])
+    server_sk.send(fill(bytes(str(len(message)), encoding=charset)))
+    server_sk.sendall(message)
 
 
 def init (server_ip, server_port) :

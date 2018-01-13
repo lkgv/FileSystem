@@ -84,15 +84,11 @@ def server () :
         elif data == '' :
             continue
         else :
-            cnt = int(str(data).strip())
-            data = []
-            for i in range(cnt) :
-                tmp = sk.recv(max_word)
-                data.append(tmp)
-            data = str(b' '.join(data).strip())
+            data = split_recv(sk)
             if data :
                 res = make(sk, data)
                 if res :
+                    sk.send(fill(bytes(str(len(res)), encoding=charset)))
                     sk.sendall(bytes(res, encoding=charset))
         extend_one_second()
 

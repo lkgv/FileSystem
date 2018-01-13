@@ -65,3 +65,11 @@ def conv (dic) :
 conv(keyword)
 def fill (message) :
     return message + (max_word - (len(message) % max_word)) * b' '
+
+def split_recv(sk) :
+    length = int(str(sk.recv(max_word).strip()))
+    cnt = (length + max_word - 1) // max_word
+    data = []
+    for i in range(cnt) :
+        data.append(str(sk.recv(max_word)))
+    return ' '.join(data)[:length]

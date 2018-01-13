@@ -96,15 +96,11 @@ def do_sendfile (local_port, md5) :
         send_to_server(keyword['OK'])
         send_to_server(bytes(local_port, encoding=charset))
         data = open(md5, 'rb').read()
-        cnt = (len(data) + max_word - 1) / max_word
         while True :
             try :
                 sk, addr = local_sk.accept()
-                sk.send(bytes(str(cnt), encoding=charset))
-                extend_one_second()
+                sk.send(fill(bytes(str(len(data)), encoding=charset)))
                 sk.sendall(data)
-                extend_one_second()
-                sk.send(keyword['file_end'])
                 if DEBUG_level > 2 :
                     print('Send file %s finished.'%md5)
                 res = sk.recv(max_word)
@@ -138,18 +134,9 @@ def do_recvfile (ip_address, port, md5) :
 
     while True :
         try :
-            data = []
             sk = socket.socket()
             sk.connect((ip_address, port))
-            cnt = int(str(sk.recv(max_word), encoding=charset))
-            for it in range(cnt) :
-                data.append(sk.recv(max_word))
-            while True :
-                wd = sk.recv(max_word)
-                if wd == keyword['file_end'] :
-                    break
-
-            data = b''.join(data)
+            data = split_recv(sk)
 
             if exist_flag :
                 sk.send(keyword['OK'])
@@ -194,16 +181,7 @@ def do_getfile (local_port, md5) :
     while True :
         try :
             sk, address = local_sk.accept()
-            data = []
-            cnt = int(str(sk.recv(max_word), encoding=charset))
-            for i in range(cnt) :
-                data.append(sk.recv(max_word))
-            while True :
-                wd = sk.recv(max_word)
-                if wd == keyword['file_end'] :
-                    break
-
-            data = b''.join(data)
+            data = split_recv(sk)
 
             if exist_flag :
                 sk.send(keyword['OK'])
