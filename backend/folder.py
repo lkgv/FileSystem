@@ -1,4 +1,5 @@
-from backend.sql import *
+# from backend.sql import *
+from backend.client_sql import *
 db_name = "../test.db"
 
 
@@ -49,9 +50,6 @@ class Folder:
         else:
             return "no father"
 
-    def add_file(self):
-        pass
-
     def add_folder(self, folder_name):
         add_folder(db_name, self.folder_id, folder_name)
 
@@ -59,6 +57,7 @@ class Folder:
     def change_file_name(file_id, new_name):
         rename_file(db_name, file_id, new_name)
 
+    @staticmethod
     def change_folder_name(folder_id, new_name):
         rename_folder(db_name, folder_id, new_name)
 
@@ -75,3 +74,9 @@ class Folder:
             delete_folder(db_name, item["id"])
         else:
             delete_file(db_name, item["id"])
+
+    def upload_file(self):
+        pass
+
+    def download_file(self):
+        pass

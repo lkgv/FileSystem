@@ -2,9 +2,11 @@ from backend.settings import *
 import backend.server
 import backend.sub_server
 
-def fuck () :
-    while True :
+
+def fuck():
+    while True:
         print(sk2.recv(1024))
+
 
 sk0 = socket.socket()
 sk1 = socket.socket()
@@ -16,7 +18,7 @@ sk1.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 sk2.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 2)
 sk1.settimeout(0)
 s = bytes('12345', encoding=charset)
-#newThread(fuck)
+# newThread(fuck)
 sk1.send(s)
 time.sleep(1)
 sk1.send(s)
@@ -24,7 +26,7 @@ time.sleep(1)
 sk1.send(s)
 print(sk2.recv(1024))
 print(sk2.recv(1024))
-while True :
+while True:
     print(sk2.recv(1024))
 
 newThread(server.main)

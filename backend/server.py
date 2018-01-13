@@ -1,4 +1,5 @@
 from backend.settings import *
+from backend.server_sql import *
 
 server_sk = socket.socket()
 socks = {}
@@ -77,7 +78,25 @@ def client_gay_server(client_sk, server, md5):
 
 
 def make(client, message):
-    return 'What?'
+    message = message.split(",")
+    if message[0] == "find_children":
+        return find_children(message[1], int(message[2]))
+    elif message[0] == "get_father_folder":
+        return get_father_folder(message[1], int(message[2]))
+    elif message[0] == "add_folder":
+        return add_folder(message[1], int(message[2]), message[3])
+    elif message[0] == "rename_file":
+        return rename_file(message[1], int(message[2]), message[3])
+    elif message[0] == "rename_folder":
+        return rename_folder(message[1], int(message[2]), message[3])
+    elif message[0] == "relink_folder":
+        return relink_folder(message[1], int(message[2]), int(message[3]))
+    elif message[0] == "relink_document":
+        return relink_document(message[1], int(message[2]), int(message[3]))
+    elif message[0] == "delete_folder":
+        return delete_folder(message[1], int(message[2]))
+    elif message[0] == "delete_file":
+        return delete_file(message[1], int(message[2]))
 
 
 def server():
