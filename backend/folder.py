@@ -93,7 +93,7 @@ class Folder:
         else:
             delete_file(db_name, item["id"])
 
-    def upload_file(self, doc_name, obj_path, progress_sig, finish_sig):
+    def upload_file(self, doc_name, pid, progress_sig, finish_sig):
         doc_size = os.path.getsize(doc_name)
         file = open(doc_name)
         data = file.read()

@@ -67,18 +67,18 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
     def dosth (cnt) :
         cnt[1].acquire()
         cnt[0] -= 1
+        ps = 1 - cnt[0] / len(answer) / 2
+        progress_sig.emit(pid, ps)
         cnt[1].release()
-    sth = lambda : dosth(cnt)
-    for hash, table in answer :
-        for tmp in table :
+    sth = lambda: dosth(cnt)
+    for hash, table in answer:
+        for tmp in table:
             ip = tmp["ip"]
             port = tmp["port"]
             newThread(put_file, args=[ip, port, hash, sth])
-    while cnt[0] > 0: # no used
+    while cnt[0] > 0:
         extend_one_second()
-
-    ## when $progress - $previous_progress >= 0.1: progress_sig.emit(pid, progress)
-    ## when finished:                              finish_sig.emit(pid)
+    finish_sig.emit(pid)
     return "upload file success"
 
 
@@ -87,14 +87,16 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
     answer = call_server(message)
     answer = eval(answer)
     cnt = [len(answer), threading.Lock()]
-    def dosth (cnt) :
+    def dosth(cnt):
         cnt[1].acquire()
         cnt[0] -= 1
+        ps = 1 - cnt[0] / len(answer)
+        progress_sig.emit(pid, ps)
         cnt[1].release()
-    sth = lambda : dosth(cnt)
+    sth = lambda: dosth(cnt)
     for package in answer:
         newThread(get_file, args=[package["ip"], package["port"], package["package_hash"], sth])
-    while cnt[0] > 0 :
+    while cnt[0] > 0:
         extend_one_second()
     sorted(answer, key=answer["part"])
     file = open(path, 'w')
@@ -104,7 +106,5 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
         pack.close()
         file.write(data)
     file.close()
-
-    ## when $progress - $previous_progress >= 0.1: progress_sig.emit(pid, progress)
-    ## when finished:                              finish_sig.emit(pid)
+    finish_sig.emit(pid)
     return answer
