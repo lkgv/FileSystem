@@ -102,7 +102,7 @@ def do_sendfile(local_port, md5):
     local_sk = sockets[local_port]
     if os.path.exists(md5):
         send_to_server(keyword['OK'])
-        send_to_server(bytes(local_port, encoding=charset))
+        send_to_server(bytes(str(local_port), encoding=charset))
         data = open(md5, 'rb').read()
         while True:
             try:
@@ -181,7 +181,9 @@ def do_getfile(local_port, md5):
     local_sk = sockets[local_port]
     exist_flag = False
     if os.path.exists(md5):
-        send_to_server(keyword['file already exist'])
+        #send_to_server(keyword['file already exist'])
+        send_to_server(keyword['OK'])
+        send_to_server(bytes(str(local_port), encoding=charset))
         if DEBUG_level > 1:
             print('Error: File %s already exists!' % md5)
         exist_flag = True
@@ -210,9 +212,9 @@ def do_getfile(local_port, md5):
                 if DEBUG_level > 1:
                     print('Error: Get file %s from port %d Hash Error!' % (md5, local_port))
                 sk.send(keyword['not ok'])
-        except:
+        except Exception as e:
             if DEBUG_level > 1:
-                print('Error: Get file %s from port %d failed!' % (md5, local_port))
+                print('Error: Get file %s from port %d failed!' % (md5, local_port), e)
 
     port_queue.put(local_port)
 
@@ -289,8 +291,9 @@ def sub_server():
 def main(server_ip, server_port=default_server_port, local_port_range=range(8088, 8188)):
     try:
         server_sk.connect((server_ip, server_port))
-        send_to_server(b'1024'+b' '*(max_word - 4))
+        send_to_server(fill(b'1024'))
         send_to_server(keyword['link'])
+        send_to_server(b'10000')
     except:
         if DEBUG_level > -1:
             print('Error! Cannot connect to server %s:%d!' % (server_ip, server_port))

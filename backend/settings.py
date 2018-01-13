@@ -77,14 +77,17 @@ def fill(message):
 
 
 def split_recv(sk):
-    length = int(str(sk.recv(max_word).strip(), encoding=charset))
-    print(':', length)
+    tmp = str(sk.recv(max_word).strip(), encoding=charset)
+    if not tmp :
+        return ''
+    print('Recv:', tmp)
+    length = int(tmp)
     # cnt = (length + max_word - 1) // max_word
     data = []
     ll = 0
     while ll < length :
-        tmp = str(sk.recv(max_word), encoding=charset)
+        tmp = sk.recv(max_word)
         ll += len(tmp)
         data.append(tmp)
-    print(len(''.join(data)))
-    return ''.join(data)[:length]
+    return str(b''.join(data)[:length], encoding=charset)
+
