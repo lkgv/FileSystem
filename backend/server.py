@@ -134,10 +134,10 @@ def main(local_port=default_server_port):
         server_sk.listen(500)
         if DEBUG_level > 0:
             print('Server initialized. Address %s:%s' % (local_IP(), local_port))
-        server()
     except:
         if DEBUG_level > -1:
             print('Cannot start server %s:%s!' % (local_IP(), local_port))
+    server()
 
 if __name__ == "__main__":
     print(local_IP())
