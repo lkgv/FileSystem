@@ -93,7 +93,7 @@ def recv_command():
         command = server_sk.recv(max_word)
         if DEBUG_level > 2:
             print('Get command:', command)
-        command_list.put(command.strip())
+        command_list.put(command)
 
 
 def do_sendfile(local_port, md5):
@@ -285,7 +285,7 @@ def sub_server():
 def main(server_ip, server_port=default_server_port, local_port_range=range(8088, 8188)):
     try:
         server_sk.connect((server_ip, server_port))
-        send_to_server(b'1'+b' '*(max_word - 1))
+        send_to_server(b'1024'+b' '*(max_word - 4))
         send_to_server(keyword['link'])
     except:
         if DEBUG_level > -1:
@@ -305,8 +305,8 @@ def main(server_ip, server_port=default_server_port, local_port_range=range(8088
 
 
 if __name__ == '__main__':
-    server_ip = input('Input server\'s IP address:')
-    thread_cnt = input('Input the number of maximum threads(default 100):')
+    server_ip = '192.168.1.138' #input('Input server\'s IP address:')
+    thread_cnt = '' #input('Input the number of maximum threads(default 100):')
     if thread_cnt == '':
         thread_cnt = 100
     else:

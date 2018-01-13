@@ -91,7 +91,7 @@ def add_folder(db_name, father_id, child_name):
         con.commit()
         cur.close()
         con.close()
-        return "add folder success"
+        return child_id
 
 
 def find_children(db_name, folder_id):
@@ -114,7 +114,8 @@ def find_children(db_name, folder_id):
         child_doc = cur.fetchall()
         if child_doc.__len__() != 0:
             tmp = []
-            for child in child_folder:
+            for child in child_doc:
+                print(child)
                 tamp = {
                     "doc_id": child[0],
                     "doc_name": child[1],
@@ -139,14 +140,14 @@ def relink_folder(db_name, father_id, child_id):
         cur.execute("select * from Folders where folder_id = (?)", (child_id,))
         old_folder = cur.fetchone()
         print(old_folder)
-        add_folder(db_name, father_id, old_folder[1])
+        new_folder_id = add_folder(db_name, father_id, old_folder[1])
         children = find_children(db_name, child_id)
         folders = children["folders"]
         documents = children["documents"]
         for folder in folders:
-            relink_folder(db_name, child_id, folder["folder_id"])
+            relink_folder(db_name, new_folder_id, folder["folder_id"])
         for document in documents:
-            relink_document(db_name, child_id, document["doc_id"])
+            relink_document(db_name, new_folder_id, document["doc_id"])
         con.commit()
     except sqlite3.Error as e:
         result = e.args[0]
@@ -285,8 +286,8 @@ def add_package(db_name, doc_id, package_hash, part, ips):
         cur.execute("insert into DocPacks(doc_id, package_id, part) values (?, ?, ?)", (doc_id, package_id, part))
         for ip in ips:
             cur.execute("select * from Servers where server_ip = (?)", (ip["ip"],))
-            server = cur.fetchone()[0]
-            cur.execute("update Servers set server_size = (?) where server_ip = (?)", (server[2]-1024, server[1]))
+            server = cur.fetchone()
+            cur.execute("update Servers set server_size = (?) where server_ip = (?)", (float(server[2]-1024), server[1]))
             cur.execute("insert into PackSers(package_id, server_id) values (?, ?)", (package_id, server[0]))
         con.commit()
         cur.close()
@@ -332,5 +333,5 @@ def get_server(db_name):
     result = []
     for server in servers:
         tmp = {"id": server[0], "ip": server[1], "size": server[2]}
-        result.append(result)
+        result.append(tmp)
     return result
