@@ -17,15 +17,15 @@ def get_file(ip_address, port, md5, sth) :
             print(ip_address, port)
             sk = socket.socket()
             sk.connect((ip_address, port))
-            data = split_recv(sk)
+            data = split_recv_b(sk)
             print(len(data))
 
             if exist_flag:
                 sk.send(keyword['OK'])
                 sk.close()
                 break
-            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
-                file = open(md5, 'w')
+            elif md5 == hashlib.md5(data).hexdigest():
+                file = open(md5, 'wb')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])
@@ -36,6 +36,7 @@ def get_file(ip_address, port, md5, sth) :
             else:
                 if DEBUG_level > 1:
                     print('Error: Recv file %s from %s:%d Hash Error!' % (md5, ip_address, port))
+                    print(md5, hashlib.md5(data).hexdigest())
                 sk.send(keyword['not ok'])
         except Exception as e:
             print(e)

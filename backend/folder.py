@@ -8,15 +8,15 @@ db_name = "../test.db"
 def split(path):
     print('path: ', path)
     hash_table = []
-    file = open(path)
+    file = open(path, 'rb')
     if not os.path.exists("tmp"):
         os.mkdir("tmp")
     while True:
         data = file.read(1024*1024)
         if data == "":
             break
-        hash_table.append(hashlib.md5(bytes(data, encoding=charset)).hexdigest())
-        pack = open("tmp/"+hash_table[-1],'w')
+        hash_table.append(hashlib.md5(data).hexdigest())
+        pack = open("tmp/"+hash_table[-1],'wb')
         pack.write(data)
         print('data: ', data)
         pack.close()
