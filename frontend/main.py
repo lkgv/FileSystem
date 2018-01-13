@@ -510,8 +510,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                     self.deleteTree(self.taskTree)
                     self.addChildren(self.taskTree, self.taskList, ["TID", "name", "u/d", "progress", "path"])
                     self.processPool.submit(self.currentFileNode.upload_file,
-                                            curTID,
                                             file_path,
+                                            curTID,
                                             self.progressSig,
                                             self.finishSig )
             elif DEBUG:
