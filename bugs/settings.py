@@ -32,6 +32,7 @@ keyword = {'heartbeat': 'heartbeat',
            'file_end': 'file_end',
            'recvfile': 'recvfile',
            'getfile': 'getfile',
+           'putfile': 'putfile',
            'file already exist': 'file already exist',
            'not ok': 'not ok',
            'file_list': 'file_list',
@@ -61,3 +62,5 @@ def conv (dic) :
             pass
 
 conv(keyword)
+def fill (message) :
+    return message + (max_word - (len(message) % max_word)) * b' '

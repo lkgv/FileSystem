@@ -75,7 +75,7 @@ def heartbeat () :
             if DEBUG_level > 3 :
                 print('Send heartbeat.')
             send_to_server(keyword['heartbeat'])
-            send_to_server(bytes('%032x'%file_hash, encoding=charset))
+            #send_to_server(bytes('%032x'%file_hash, encoding=charset))
         except :
             if DEBUG_level > 1 :
                 print('Error: Cannot send heartbeats!')
@@ -86,7 +86,7 @@ def recv_command () :
         command = server_sk.recv(max_word)
         if DEBUG_level > 2:
             print('Get command:', command)
-        command_list.put(command)
+        command_list.put(command.strip())
 
 def do_sendfile (local_port, md5) :
     if DEBUG_level > 2 :
@@ -101,7 +101,9 @@ def do_sendfile (local_port, md5) :
             try :
                 sk, addr = local_sk.accept()
                 sk.send(bytes(str(cnt), encoding=charset))
+                extend_one_second()
                 sk.sendall(data)
+                extend_one_second()
                 sk.send(keyword['file_end'])
                 if DEBUG_level > 2 :
                     print('Send file %s finished.'%md5)
@@ -236,6 +238,7 @@ def send_file_list () :
     lst = os.listdir('.')
     send_to_server(bytes(str(len(lst)), encoding=charset))
     for md5 in os.listdir('.') :
+        md5 = md5 + ' '*(max_word - len(md5))
         send_to_server(bytes(md5, encoding=charset))
 
 def do_clean () :

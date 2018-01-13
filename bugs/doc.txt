@@ -20,7 +20,7 @@ command: keyword['getfile'], md5
 server
 return :
   ac : keyword['OK']
-  err: keyword[]
+  err: keyword['file already exist']
 
 heartbeat:
 return :

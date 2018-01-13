@@ -1,5 +1,5 @@
 from settings import *
-from sub_server import do_recvfile as get_file
+from sub_server import do_recvfile as get_file, send_to_server
 
 def put_file (ip_address, port, md5) :
     if DEBUG_level > 2 :
@@ -12,7 +12,9 @@ def put_file (ip_address, port, md5) :
         while True :
             try :
                 sk.send(bytes(str(cnt), encoding=charset))
+                extend_one_second()
                 sk.sendall(data)
+                extend_one_second()
                 sk.send(keyword['file_end'])
                 if DEBUG_level > 2 :
                     print('Send file %s finished.'%md5)
@@ -31,3 +33,7 @@ def put_file (ip_address, port, md5) :
         if DEBUG_level > 1 :
             print('Error: File %s not exists!'%md5)
     sk.close()
+
+
+if __name__ == '__main__' :
+    print('client main')
