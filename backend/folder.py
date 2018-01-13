@@ -96,7 +96,7 @@ class Folder:
         doc_hash = hashlib.md5(data).hexdigest()
         hash_table = split(doc_name)
         message = upload_file(db_name, self.folder_id, doc_name.split("/")[-1], doc_hash, doc_size, hash_table,
-                              obj_path, progress_sig, finish_sig)
+                              pid, progress_sig, finish_sig)
         return message
 
     @staticmethod

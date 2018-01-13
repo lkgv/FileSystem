@@ -58,7 +58,7 @@ def delete_file(db_name, doc_id):
 
 
 def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
-                obj_path, progress_sig, finish_sig):
+                pid, progress_sig, finish_sig):
     message = "upload_file,"+db_name+","+folder_id+","+doc_name+","+doc_hash+","+doc_size+","
     message += "|".join(hash_table)
     answer = call_server(message)
@@ -68,6 +68,9 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
             ip = tmp["ip"]
             port = tmp["port"]
             newThread(put_file, args=[ip, port, hash])
+
+    ## when $progress - $previous_progress >= 0.1: progress_sig.emit(pid, progress)
+    ## when finished:                              finish_sig.emit(pid)
     return "upload file success"
 
 
@@ -77,4 +80,7 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
     answer = eval(answer)
     for package in answer:
         newThread(get_file, args=[package["ip"], package["port"], package["package_hash"], sig])
+
+    ## when $progress - $previous_progress >= 0.1: progress_sig.emit(pid, progress)
+    ## when finished:                              finish_sig.emit(pid)
     return answer

@@ -478,8 +478,8 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                                                     curTID,
                                                     obj_file['id'],
                                                     file_path,
-                                                    self.progressSig,
-                                                    self.finishSig )
+                                                    self.progressSig[str, float],
+                                                    self.finishSig[str] )
                     elif DEBUG:
                         print("information refreshing, cannot download")
                         self.warnSig[str].emit("Infomation refreshing, cannot download now")
@@ -509,10 +509,9 @@ class WFMShelf(QMainWindow, Ui_MainWindow):
                     self.taskList.append(newTask)
                     self.deleteTree(self.taskTree)
                     self.addChildren(self.taskTree, self.taskList, ["TID", "name", "u/d", "progress", "path"])
-                    self.processPool.submit(folder.Folder.upload_file,
+                    self.processPool.submit(self.currentFileNode.upload_file,
                                             curTID,
                                             file_path,
-                                            self.currentPath,
                                             self.progressSig,
                                             self.finishSig )
             elif DEBUG:
