@@ -7,7 +7,7 @@ def get_file(ip_address, port, md5, sth) :
     if DEBUG_level > 2:
         print('Recv file %s from %s:%d.' % (md5, ip_address, port))
     exist_flag = False
-    if os.path.exists(md5):
+    if os.path.exists('tmp/'+md5):
         if DEBUG_level > 1:
             print('Error: File %s already exists!' % md5)
         exist_flag = True
@@ -25,7 +25,7 @@ def get_file(ip_address, port, md5, sth) :
                 sk.close()
                 break
             elif md5 == hashlib.md5(data).hexdigest():
-                file = open(md5, 'wb')
+                file = open('tmp/'+md5, 'wb')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])

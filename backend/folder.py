@@ -13,7 +13,7 @@ def split(path):
         os.mkdir("tmp")
     while True:
         data = file.read(1024*1024)
-        if data == "":
+        if data == b"":
             break
         hash_table.append(hashlib.md5(data).hexdigest())
         pack = open("tmp/"+hash_table[-1],'wb')

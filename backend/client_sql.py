@@ -57,6 +57,9 @@ def delete_file(db_name, doc_id):
     answer = call_server(message)
     return answer
 
+def clean_tmp() :
+    os.system('rm tmp/*')
+
 
 def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
                 pid, progress_sig, finish_sig):
@@ -85,6 +88,8 @@ def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size, hash_table,
         extend_one_second()
     #  finish_sig[str].emit(pid)
     # frame.finishSig[str].emit(pid)
+    clean_tmp()
+    print('finished.')
     return "upload file success"
 
 
@@ -104,13 +109,16 @@ def download_file(db_name, pid, doc_id, path, progress_sig, finish_sig):
         newThread(get_file, args=[package["ip"], package["port"], package["package_hash"], sth])
     while cnt[0] > 0:
         extend_one_second()
-    sorted(answer, key=answer["part"])
-    file = open(path, 'w')
+    sorted(answer, key=lambda x : x ["part"])
+    file = open(path+'.down', 'wb')
     for package in answer:
-        pack = open("tmp/"+package["package_hash"])
+        pack = open("tmp/"+package["package_hash"], 'rb')
         data = pack.read()
         pack.close()
         file.write(data)
     file.close()
+    os.rename(path+'.down', path)
     # finish_sig[str].emit(pid)
+    clean_tmp()
+    print('finished.')
     return answer
