@@ -48,10 +48,9 @@ class Folder:
         rename_folder(db_name, self.folder_id, new_name)
 
     @staticmethod
-    def change_file_name(self, file_id, new_name):
+    def change_file_name(file_id, new_name):
         rename_file(db_name, file_id, new_name)
 
-    @staticmethod
     def paste(self, item):
         if item["is_folder"]:
             relink_folder(db_name, self.folder_id, item["id"])
@@ -59,7 +58,7 @@ class Folder:
             relink_document(db_name, self.folder_id, item["id"])
 
     @staticmethod
-    def delete(self, item):
+    def delete(item):
         if item["is_folder"]:
             delete_folder(db_name, item["id"])
         else:

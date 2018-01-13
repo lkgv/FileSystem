@@ -99,7 +99,17 @@ def relink_folder(db_name, father_id, child_id):
     cur = con.cursor()
     result = "paste folder success"
     try:
-        cur.execute("insert into TreePaths(father_id, child_id) values (?, ?)", (father_id, child_id))
+        cur.execute("select * from Folders where folder_id = (?)", (child_id,))
+        old_folder = cur.fetchone()
+        print(old_folder)
+        add_folder(db_name, father_id, old_folder[1])
+        children = find_children(db_name, child_id)
+        folders = children["folders"]
+        documents = children["documents"]
+        for folder in folders:
+            relink_folder(db_name, child_id, folder["folder_id"])
+        for document in documents:
+            relink_document(db_name, child_id, document["doc_id"])
         con.commit()
     except sqlite3.Error as e:
         result = e.args[0]
@@ -133,17 +143,31 @@ def add_file(db_name, folder_id, doc_name, doc_hash, doc_size):
         con.commit()
         cur.close()
         con.close()
-        return "add file success"
+        return doc_id
 
 
 def relink_document(db_name, folder_id, doc_id):
-    con = sqlite3.connect()
+    con = sqlite3.connect(db_name)
     cur = con.cursor()
     result = "paste document success"
     try:
-        cur.execute("insert into FoldDocs(folder_id, doc_id) values (?, ?)", (folder_id, doc_id))
+        cur.execute("select * from Documents where doc_id = (?)", (doc_id,))
+        doc = cur.fetchone()
+        print(doc)
+        new_doc_id = add_file(db_name, folder_id, doc[1], doc[2], doc[3])
+        print(new_doc_id)
+        if type(doc_id) == str:
+            result = "add doc error"
+        else:
+            packages = find_package(db_name, doc_id)
+            print(packages)
+            for package in packages:
+                add_package(db_name, new_doc_id, package["package_hash"], package["part"])
+        con.commit()
     except sqlite3.Error as e:
         result = e.args[0]
+    cur.close()
+    con.close()
     return result
 
 
@@ -230,6 +254,22 @@ def rename_file(db_name, doc_id, doc_name):
         cur.close()
         con.close()
         return "rename document error " + str(e)
+
+
+def find_package(db_name, doc_id):
+    con = sqlite3.connect(db_name)
+    cur = con.cursor()
+    cur.execute("select p.*, dp.part from Packages as p join DocPacks as dp on "
+                "p.package_id = dp.package_id where dp.doc_id = (?) order by dp.part",
+                (doc_id,))
+    packages = cur.fetchall()
+    result = []
+    for package in packages:
+        tmp = {"package_id": package[0],
+               "package_hash": package[1],
+               "part": package[2]}
+        result.append(tmp)
+    return result
 
 
 def find_children(db_name, folder_id):
