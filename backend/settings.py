@@ -82,4 +82,4 @@ def split_recv(sk):
     data = []
     for i in range(cnt):
         data.append(str(sk.recv(max_word), encoding=charset))
-    return ' '.join(data)[:length]
+    return ''.join(data)[:length]
