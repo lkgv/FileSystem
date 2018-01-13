@@ -97,6 +97,12 @@ def make(client, message):
         return delete_folder(message[1], int(message[2]))
     elif message[0] == "delete_file":
         return delete_file(message[1], int(message[2]))
+    elif message[0] == "upload_file":
+        return upload_file(message[1], int(message[2]), message[3], message[4], float(message[5]))
+    elif message[0] == "download_file":
+        return download_file(message[1], int(message[2]))
+    else:
+        return "The order is wrong!!!"
 
 
 def server():

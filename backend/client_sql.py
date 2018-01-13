@@ -57,9 +57,14 @@ def delete_file(db_name, doc_id):
     return answer
 
 
-def upload_file():
-    pass
+def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size):
+    message = "upload_file,"+db_name+","+folder_id+","+doc_name+","+doc_hash+","+doc_size
+    answer = call_server(message)
+    return answer
 
 
-def download_file():
-    pass
+def download_file(db_name, doc_id, path):
+    message = "download_file,"+db_name+","+doc_id
+    answer = call_server(message)
+    answer = eval(answer)
+    return answer

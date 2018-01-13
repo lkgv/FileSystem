@@ -75,8 +75,12 @@ class Folder:
         else:
             delete_file(db_name, item["id"])
 
-    def upload_file(self):
-        pass
+    def upload_file(self, doc_name, doc_size):
+        doc_hash = ""
+        message = upload_file(db_name, self.folder_id, doc_name, doc_hash, doc_size)
+        return message
 
-    def download_file(self):
-        pass
+    @staticmethod
+    def download_file(doc_id, path):
+        message = download_file(db_name, doc_id, path)
+        return message

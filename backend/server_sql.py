@@ -46,9 +46,10 @@ def delete_file(db_name, doc_id):
     return message
 
 
-def upload_file():
-    pass
+def upload_file(db_name, folder_id, doc_name, doc_hash, doc_size):
+    add_file(db_name, folder_id, doc_name, doc_hash, doc_size)
 
 
-def download_file():
-    pass
+def download_file(db_name, doc_id):
+    packages = find_package(db_name, doc_id)
+    return str(packages)
