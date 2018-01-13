@@ -30,6 +30,8 @@ cmake-build-release/
 ## File-based project format:
 *.iws
 
+frontend/tmp/*
+
 ## Plugin-specific files:
 
 # IntelliJ
