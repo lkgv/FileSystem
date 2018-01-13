@@ -151,8 +151,8 @@ def do_recvfile(ip_address, port, md5):
                 sk.send(keyword['OK'])
                 sk.close()
                 break
-            elif md5 == hashlib.md5(data).hexdigest():
-                file = open(md5, 'wb')
+            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
+                file = open(md5, 'w')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])
@@ -197,8 +197,8 @@ def do_getfile(local_port, md5):
             if exist_flag:
                 sk.send(keyword['OK'])
                 break
-            elif md5 == hashlib.md5(data).hexdigest():
-                file = open(md5, 'wb')
+            elif md5 == hashlib.md5(bytes(data, encoding=charset)).hexdigest():
+                file = open(md5, 'w')
                 file.write(data)
                 file.close()
                 sk.send(keyword['OK'])
@@ -210,9 +210,9 @@ def do_getfile(local_port, md5):
                 if DEBUG_level > 1:
                     print('Error: Get file %s from port %d Hash Error!' % (md5, local_port))
                 sk.send(keyword['not ok'])
-        except:
+        except Exception as e:
             if DEBUG_level > 1:
-                print('Error: Get file %s from port %d failed!' % (md5, local_port))
+                print('Error: Get file %s from port %d failed!' % (md5, local_port), e)
 
     port_queue.put(local_port)
 
