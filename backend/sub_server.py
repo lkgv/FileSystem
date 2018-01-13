@@ -186,6 +186,7 @@ def do_getfile(local_port, md5):
         exist_flag = True
     else:
         send_to_server(keyword['OK'])
+        send_to_server(bytes(str(local_port), encoding=charset))
 
     while True:
         try:

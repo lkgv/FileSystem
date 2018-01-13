@@ -1,8 +1,11 @@
 from backend.settings import *
-from backend.sub_server import do_recvfile as get_file, send_to_server
+from backend.sub_server import do_recvfile, send_to_server
 
 server_sk = socket.socket()
 
+def get_file(ip_address, port, md5, sig) :
+    do_recvfile(ip_address, port, md5)
+    sig[str, float].emit()
 
 def put_file(ip_address, port, md5):
     if DEBUG_level > 2:
@@ -10,7 +13,7 @@ def put_file(ip_address, port, md5):
     sk = socket.socket()
     sk.connect((ip_address, port))
     if os.path.exists(md5):
-        data = open(md5, 'rb').read()
+        data = open('tmp/'+md5, 'rb').read()
         cnt = (len(data) + max_word - 1) / max_word
         while True:
             try:

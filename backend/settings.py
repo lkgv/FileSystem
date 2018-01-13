@@ -16,10 +16,14 @@ level 4: Useless messages.
 """
 
 
-def extend_one_second () :
+def extend_one_second():
     time.sleep(1)
-def extend_heartbeat () :
+
+
+def extend_heartbeat():
     time.sleep(5)
+
+
 default_server_port = 8080
 max_word = 1024
 charset = 'utf-8'
@@ -41,35 +45,41 @@ keyword = {'heartbeat': 'heartbeat',
            }
 
 
-
-
-def newThread (fun, args = None) :
-    if args :
+def newThread(fun, args=None):
+    if args:
         t = threading.Thread(target=fun, args=args)
-    else :
+    else:
         t = threading.Thread(target=fun)
     t.setDaemon(True)
     t.start()
-def local_IP () :
-    if platform.system() == 'Windows' :
+
+
+def local_IP():
+    if platform.system() == 'Windows':
         return socket.gethostbyname(socket.gethostname())
-    else :
+    else:
         return '127.0.0.1'
-def conv (dic) :
-    for it in dic.keys() :
-        try :
-            dic[it] = bytes(dic[it]+' '*(max_word - len(dic[it])), encoding=charset)
-        except :
+
+
+def conv(dic):
+    for it in dic.keys():
+        try:
+            dic[it] = bytes(dic[it] + ' ' * (max_word - len(dic[it])), encoding=charset)
+        except:
             pass
 
+
 conv(keyword)
-def fill (message) :
+
+
+def fill(message):
     return message + (max_word - (len(message) % max_word)) * b' '
 
-def split_recv(sk) :
+
+def split_recv(sk):
     length = int(str(sk.recv(max_word).strip()))
     cnt = (length + max_word - 1) // max_word
     data = []
-    for i in range(cnt) :
+    for i in range(cnt):
         data.append(str(sk.recv(max_word)))
     return ' '.join(data)[:length]
