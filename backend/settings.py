@@ -58,7 +58,7 @@ def local_IP():
     if platform.system() == 'Windows':
         return socket.gethostbyname(socket.gethostname())
     else:
-        return '127.0.0.1'
+        return '192.168.1.138'
 
 
 def conv(dic):

@@ -135,3 +135,6 @@ def main(local_port=default_server_port):
         if DEBUG_level > -1:
             print('Cannot start server %s:%s!' % (local_IP(), local_port))
 
+if __name__ == "__main__":
+    print(local_IP())
+    main()
